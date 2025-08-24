@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://6bypeyngjdqj"]
+[gd_scene load_steps=2 format=3 uid="uid://6bypeyngjdqj"]
 
 [ext_resource type="PackedScene" uid="uid://chmmcxfcwm47k" path="res://scenes/plane.tscn" id="1_uwrxv"]
-[ext_resource type="PackedScene" uid="uid://xhg61dett2ax" path="res://scenes/trail.tscn" id="2_yqjtg"]
 
 [node name="Game" type="Node2D"]
 
@@ -10,5 +9,3 @@ zoom = Vector2(0.75, 0.75)
 
 [node name="Plane" parent="." instance=ExtResource("1_uwrxv")]
 position = Vector2(297.99997, 274)
-
-[node name="Trail" parent="." instance=ExtResource("2_yqjtg")]
