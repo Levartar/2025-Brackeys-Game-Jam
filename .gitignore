@@ -1,3 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# VS Code specific ignores
+.vscode/
+
+# MacOS specific ignores
+.DS_Store
