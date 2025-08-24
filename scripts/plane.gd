@@ -5,21 +5,26 @@ extends CharacterBody2D
 
 var rotation_direction = 0
 var deploying: bool = false
-@onready var color_rect = $ColorRect
+var last_deployment_state: bool = false
+var trail: Line2D
 
 func _ready() -> void:
-  color_rect.visible = false
+  trail = get_parent().get_node("Trail")
 
 func get_input():
   rotation_direction = Input.get_axis("left", "right")
   velocity = transform.y * -1 * speed
   deploying = Input.is_action_pressed("deploy")
 
+func _process(_delta: float) -> void:
+  if deploying != last_deployment_state:
+    trail.deploying = !trail.deploying
+    if deploying:
+      trail.clear_points()
+    last_deployment_state = deploying
+
+
 func _physics_process(delta):
   get_input()
-  if deploying and not color_rect.visible:
-    color_rect.visible = true
-  elif not deploying and color_rect.visible:
-    color_rect.visible = false
   rotation += rotation_direction * rotation_speed * delta
   move_and_slide()
