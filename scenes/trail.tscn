@@ -4,4 +4,5 @@
 
 [node name="Trail" type="Line2D"]
 points = PackedVector2Array(0, 0, 0, 5)
+width = 25.0
 script = ExtResource("1_rsj4o")

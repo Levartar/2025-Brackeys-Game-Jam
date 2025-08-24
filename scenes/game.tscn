@@ -9,3 +9,4 @@ zoom = Vector2(0.75, 0.75)
 
 [node name="Plane" parent="." instance=ExtResource("1_uwrxv")]
 position = Vector2(297.99997, 274)
+cooldown = 1.5
