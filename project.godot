@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="2025-Brackeys"
-config/features=PackedStringArray("4.4", "Mobile")
+config/name="Brackeys"
+config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
 [rendering]
