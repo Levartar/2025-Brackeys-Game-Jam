@@ -1,17 +1,19 @@
 extends TextureRect
 
-const TEX_SIZE := Vector2i(400, 400)
+const TEX_SIZE := Vector2i(800, 800)
 var seed: int = 0
 var noise := FastNoiseLite.new()
 var earth_img: Image
 var earth_tex: ImageTexture
 
 # Material colors
-const COLOR_MOUNTAIN = Color(0.7, 0.7, 0.7, 1.0)
-const COLOR_FOREST   = Color(0.1, 0.6, 0.1, 1.0)
-const COLOR_GRASS    = Color(0.4, 0.8, 0.2, 1.0)
-const COLOR_SAND     = Color(0.9, 0.8, 0.5, 1.0)
-const COLOR_RIVER    = Color(0.1, 0.2, 0.7, 1.0)
+const COLOR_MOUNTAIN = Color(0.35, 0.01, 0.23, 1.0)
+const COLOR_FOREST   = Color(0.75, 0.15, 0.26, 1.0)
+const COLOR_GRASS    = Color(0.95, 0.38, 0.25, 1.0)
+const COLOR_SAND     = Color(0.95, 0.82, 0.74, 1.0)
+const COLOR_RIVER    = Color(0.04, 0.59, 0.65, 1.0)
+#Color(0.04, 0.59, 0.65, 1.0)
+#Color(0.15, 0.06, 0.15, 1.0)
 
 func _ready():
   generate_map()
@@ -25,7 +27,7 @@ func generate_map(optional_seed: int = randi()):
     seed = optional_seed
   noise.seed = seed
   noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-  noise.frequency = 0.01
+  noise.frequency = 0.003
 
   earth_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
   for x in range(TEX_SIZE.x):

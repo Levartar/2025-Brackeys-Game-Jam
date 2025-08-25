@@ -1,6 +1,6 @@
 extends Node2D
 
-const TEX_SIZE := Vector2i(400, 400)
+const TEX_SIZE := Vector2i(800, 800)
 
 @onready var earth_rect: TextureRect = $Layers/EarthTexture
 @onready var fire_rect: TextureRect = $Layers/FireTexture
@@ -35,14 +35,11 @@ func _ready():
 	fire_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
 	water_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
 
-	# Fill earth with forest (green) and grass (light green) randomly
-	for x in TEX_SIZE.x:
-		for y in TEX_SIZE.y:
-			#var is_forest = randf() < 0.5
-			#var color = Color(0.1, 0.6, 0.1, 1.0) if is_forest else Color(0.4, 0.8, 0.2, 1.0)
-			#earth_img.set_pixel(x, y, color)
-			fire_img.set_pixel(x, y, Color(0, 0, 0, 0))
-			water_img.set_pixel(x, y, Color(0, 0, 0, 0))
+	# Clear images
+	#for x in TEX_SIZE.x:
+	#	for y in TEX_SIZE.y:
+	#		fire_img.set_pixel(x, y, Color(0, 0, 0, 0))
+	#		water_img.set_pixel(x, y, Color(0, 0, 0, 0))
 
 	# Copy earth image from EarthTexture node
 	var earth_node = earth_rect
@@ -65,7 +62,7 @@ func _ready():
 	fire_rect.texture = fire_tex
 	water_rect.texture = water_tex
 
-	ignite_area(Rect2i(Vector2i(TEX_SIZE.x/2, TEX_SIZE.y/2), Vector2i(50, 50)))
+	ignite_area(Rect2i(Vector2i(TEX_SIZE.x/2, TEX_SIZE.y/2), Vector2i(10, 10)))
 
 
 func throw_water(rect: Rect2i):
@@ -107,7 +104,10 @@ func _process(delta):
 			# Extinguish if water or ash present
 			var water_val = water_img.get_pixel(bx, by)
 			var earth_val = earth_img.get_pixel(bx, by)
-			if water_val.b > 0.5 or is_equal_approx(earth_val.r, 0.2): # ash or wet
+			# Remove if earth material is ash, sand, or river, or if water is present
+			if water_val.b > 0.5 \
+				or earth_val.r <=0.4\
+				or earth_val.b >=0.6:
 				fire_img.set_pixel(bx, by, alpha_col)
 				to_remove.append(pos)
 				continue
@@ -119,14 +119,14 @@ func _process(delta):
 				earth_img.set_pixel(bx, by, ash_col)
 				to_remove.append(pos)
 			else:
-				if int(fire_val.g * 2) != int((fire_val.g + delta) * 2): # triggers every 0.33s
+				if int(fire_val.g * 2) != int((fire_val.g + delta) * 2): # triggers every 0.5s
 					ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 				fire_img.set_pixel(bx, by, Color(fire_val.r, fire_val.g, fire_val.b, fire_val.a))
 		else:
 			to_remove.append(pos)
 	# Ignite new fires
 	for pos in to_ignite:
-		fire_img.set_pixel(pos.x, pos.y, Color(1, 10.0, 0, 1))
+		fire_img.set_pixel(pos.x, pos.y, Color(1, 1, 0, 1))
 		burning_pixels[pos] = true
 	# Remove extinguished or burned out pixels
 	for pos in to_remove:

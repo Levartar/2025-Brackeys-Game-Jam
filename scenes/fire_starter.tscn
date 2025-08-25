@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bc6kn2bd5ise0"]
+[gd_scene load_steps=7 format=3 uid="uid://bc6kn2bd5ise0"]
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
 [ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="2_i8saw"]
@@ -7,7 +7,10 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xncx1"]
 shader = ExtResource("2_i8saw")
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ek5vj"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xncx1"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wrvky"]
+noise = SubResource("FastNoiseLite_xncx1")
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ek5vj")
@@ -28,7 +31,7 @@ material = SubResource("ShaderMaterial_xncx1")
 layout_mode = 0
 offset_right = 400.0
 offset_bottom = 400.0
-texture = SubResource("PlaceholderTexture2D_ek5vj")
+texture = SubResource("NoiseTexture2D_wrvky")
 script = ExtResource("3_xncx1")
 
 [node name="FireTexture" type="TextureRect" parent="Layers"]
@@ -46,5 +49,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Label" type="Label" parent="."]
+modulate = Color(0.20784314, 1, 1, 1)
 offset_right = 40.0
 offset_bottom = 23.0
