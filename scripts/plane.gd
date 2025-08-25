@@ -5,7 +5,7 @@ enum PlaneType {Standard, Bomber}
 @export var type: PlaneType = PlaneType.Standard
 @export var speed: int = 400
 @export var rotation_speed: float = 1.5
-@export var cooldown: float = 1.5
+@export var cooldown_values = {"Standard": 1.5, "Bomber": 1.5}
 
 var rotation_direction: float = 0
 var deploying: bool = false
@@ -14,11 +14,14 @@ var trail_scene: PackedScene = preload("res://scenes/trail.tscn")
 var bomb_scene: PackedScene = preload("res://scenes/bomb.tscn")
 var latest_trail: Node
 
+var cooldown
 var cooling_down: bool = false
 var current_cool_down: float = 0.0
 var deployed_after_cooldown: bool = false
 
 func _ready() -> void:
+  if type == PlaneType.Standard: cooldown = cooldown_values["Standard"]
+  elif type == PlaneType.Bomber: cooldown = cooldown_values["Bomber"]
   current_cool_down = cooldown
 
 func _process(delta: float) -> void:
