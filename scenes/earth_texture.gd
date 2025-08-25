@@ -37,9 +37,9 @@ func generate_map(optional_seed: int = randi()):
       var color: Color
       if n < -0.4:
         color = COLOR_RIVER
-      elif n < -0.1:
+      elif n < -0.3:
         color = COLOR_SAND
-      elif n < 0.2:
+      elif n < 0.0:
         color = COLOR_GRASS
       elif n < 0.5:
         color = COLOR_FOREST
