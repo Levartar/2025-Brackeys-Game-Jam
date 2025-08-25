@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://5prbvrhmbio6"]
+
+[ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_ek5vj")
+
+[node name="FireSimulation" type="Node2D" parent="."]
+
+[node name="Layers" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="EarthTexture" type="TextureRect" parent="Layers"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="FireTexture" type="TextureRect" parent="Layers"]
+z_index = 1
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="WaterTexture" type="TextureRect" parent="Layers"]
+modulate = Color(1, 1, 1, 0.1254902)
+z_index = 2
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
