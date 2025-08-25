@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bc6kn2bd5ise0"]
+[gd_scene load_steps=2 format=3 uid="uid://5prbvrhmbio6"]
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
 
@@ -28,6 +28,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="WaterTexture" type="TextureRect" parent="Layers"]
+modulate = Color(1, 1, 1, 0.1254902)
 z_index = 2
 layout_mode = 0
 offset_right = 40.0

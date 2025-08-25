@@ -22,7 +22,7 @@ const alpha_col = Color(0, 0, 0, 0)
 func ignite_area(rect: Rect2i):
   for x in range(rect.position.x, rect.position.x + rect.size.x):
     for y in range(rect.position.y, rect.position.y + rect.size.y):
-      ignite_pixel(Vector2i(x, y))#change indentation
+      ignite_pixel(Vector2i(x, y)) # change indentation
 
 func ignite_pixel(pos: Vector2i):
   fire_img.set_pixel(pos.x, pos.y, Color(1, 10.0, 0, 1)) # burning, 10s lifetime in green channel
@@ -75,7 +75,7 @@ func _update_water_texture():
 
 # Ignite a random neighbor of a burning pixel
 func ignite_random_neighbor(pos: Vector2i, to_ignite: Array) -> void:
-  var neighbors = [Vector2i(-1,0), Vector2i(1,0), Vector2i(0,-1), Vector2i(0,1)]
+  var neighbors = [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]
   var n = neighbors[randi() % neighbors.size()]
   var nx = pos.x + n.x
   var ny = pos.y + n.y
@@ -123,3 +123,23 @@ func _process(delta):
     burning_pixels.erase(pos)
   _update_fire_texture()
   _update_earth_texture()
+
+# Convert world position to texture coordinates
+func world_to_texture_coords(world_pos: Vector2) -> Vector2i:
+  # Assuming the fire texture covers the entire screen/viewport
+  # You'll need to adjust this based on your actual setup
+  var texture_pos = world_pos # Adjust scaling/offset as needed
+  return Vector2i(int(texture_pos.x), int(texture_pos.y))
+
+# Check if a world position intersects with fire
+func is_position_on_fire(world_pos: Vector2) -> bool:
+  var tex_pos = world_to_texture_coords(world_pos)
+  if tex_pos.x >= 0 and tex_pos.x < TEX_SIZE.x and tex_pos.y >= 0 and tex_pos.y < TEX_SIZE.y:
+    return burning_pixels.has(tex_pos)
+  return false
+
+# Drop water at world position
+func drop_water_at_position(world_pos: Vector2, radius: int = 10):
+  var tex_pos = world_to_texture_coords(world_pos)
+  var rect = Rect2i(tex_pos.x - radius, tex_pos.y - radius, radius * 2, radius * 2)
+  throw_water(rect)
