@@ -1,10 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://bc6kn2bd5ise0"]
+[gd_scene load_steps=2 format=3 uid="uid://bc6kn2bd5ise0"]
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
-[ext_resource type="Shader" uid="uid://cqk5sbrm3jqey" path="res://shaders/layer_show.gdshader" id="2_i8saw"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xncx1"]
-shader = ExtResource("2_i8saw")
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ek5vj")
@@ -19,29 +15,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-
-[node name="EarthLayer" type="ColorRect" parent="Layers"]
-visible = false
-material = SubResource("ShaderMaterial_xncx1")
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="FireLayer" type="ColorRect" parent="Layers"]
-visible = false
-z_index = 1
-material = SubResource("ShaderMaterial_xncx1")
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="WaterLayer" type="ColorRect" parent="Layers"]
-visible = false
-z_index = 2
-material = SubResource("ShaderMaterial_xncx1")
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="EarthTexture" type="TextureRect" parent="Layers"]
 layout_mode = 0
