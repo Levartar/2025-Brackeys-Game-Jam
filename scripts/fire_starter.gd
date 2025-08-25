@@ -16,10 +16,6 @@ var fire_tex: ImageTexture
 var water_tex: ImageTexture
 
 # Burning pixel management
-const BURNING_LIST_SIZE = 4096 #960 #4096
-const BURNING_CHUNK_SIZE = 32 #256
-
-# Burning pixel management
 var burning_pixels := {}           # Dictionary: pos -> true
 var burning_pixel_keys := []       # Array of Vector2i
 var chunk_index := 0
@@ -120,7 +116,7 @@ func _process(_delta):
 				fire_img.set_pixel(bx, by, alpha_col)
 				to_remove.append(pos)
 				continue
-			fire_val.g -= 1.0 / 12 # Fire burns for 4 secs
+			fire_val.g -= 1.0 / 12 # Fire burns for 4 secs having 3 updates per second
 			ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 			if fire_val.g <= 0.0:
 				fire_img.set_pixel(bx, by, alpha_col)
