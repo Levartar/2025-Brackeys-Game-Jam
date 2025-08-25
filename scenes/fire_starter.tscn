@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://5prbvrhmbio6"]
+[gd_scene load_steps=5 format=3 uid="uid://bc6kn2bd5ise0"]
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
+[ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="2_i8saw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xncx1"]
+shader = ExtResource("2_i8saw")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ek5vj"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ek5vj")
@@ -17,12 +23,15 @@ grow_vertical = 2
 size_flags_horizontal = 4
 
 [node name="EarthTexture" type="TextureRect" parent="Layers"]
+material = SubResource("ShaderMaterial_xncx1")
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 400.0
+offset_bottom = 400.0
+texture = SubResource("PlaceholderTexture2D_ek5vj")
 
 [node name="FireTexture" type="TextureRect" parent="Layers"]
 z_index = 1
+material = SubResource("ShaderMaterial_xncx1")
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
