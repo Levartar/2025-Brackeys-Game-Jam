@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://6bypeyngjdqj"]
+
+[ext_resource type="PackedScene" uid="uid://chmmcxfcwm47k" path="res://scenes/plane.tscn" id="1_uwrxv"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.75, 0.75)
+
+[node name="Plane" parent="." instance=ExtResource("1_uwrxv")]
+position = Vector2(297.99997, 274)
+cooldown = 1.5
