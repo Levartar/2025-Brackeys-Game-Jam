@@ -109,17 +109,15 @@ func _process(delta):
 				earth_img.set_pixel(bx, by, ash_col)
 				to_remove.append(pos)
 			else:
-				if int(fire_val.g * 4) != int((fire_val.g + delta) * 4): # triggers every 0.33s
+				if int(fire_val.g * 2) != int((fire_val.g + delta) * 2): # triggers every 0.33s
 					ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 				fire_img.set_pixel(bx, by, Color(fire_val.r, fire_val.g, fire_val.b, fire_val.a))
 		else:
 			to_remove.append(pos)
 	# Ignite new fires
 	for pos in to_ignite:
-		var fire_val = fire_img.get_pixel(pos.x, pos.y)
-		if fire_val.r < 0.8:
-			fire_img.set_pixel(pos.x, pos.y, Color(1, 10.0, 0, 1))
-			burning_pixels[pos] = true
+		fire_img.set_pixel(pos.x, pos.y, Color(1, 10.0, 0, 1))
+		burning_pixels[pos] = true
 	# Remove extinguished or burned out pixels
 	for pos in to_remove:
 		burning_pixels.erase(pos)
