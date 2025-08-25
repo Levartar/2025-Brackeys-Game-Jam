@@ -2,6 +2,7 @@ extends Line2D
 
 @export var max_points: int = 100
 @export var min_distance: int = 5
+@export var longevity: float = 0.5
 
 var plane: CharacterBody2D
 var is_active: bool = true
@@ -23,3 +24,8 @@ func _process(_delta):
 
 func deactivate() -> void:
   is_active = false
+  await get_tree().create_timer(longevity).timeout
+  var tween = get_tree().create_tween()
+  tween.tween_property(self, "modulate:a", 0.0, 1.0)
+  await tween.finished
+  queue_free()
