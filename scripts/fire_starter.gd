@@ -21,7 +21,7 @@ var burning_pixel_keys := []       # Array of Vector2i
 var chunk_index := 0
 const CHUNK_DIVISOR = 20
 
-const ash_col = Color(0.2, 0.2, 0.2, 1.0)
+const ash_col = Color(0.2, 0.2, 0.2, 1)
 const alpha_col = Color(0, 0, 0, 0)
 
 func _ready():
@@ -113,14 +113,11 @@ func _process(_delta):
 			if water_val.b > 0.5 \
 				or earth_val.r <=0.4\
 				or earth_val.b >=0.6:
-				fire_img.set_pixel(bx, by, alpha_col)
 				to_remove.append(pos)
 				continue
 			fire_val.g -= 1.0 / 12 # Fire burns for 4 secs having 3 updates per second
 			ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 			if fire_val.g <= 0.0:
-				fire_img.set_pixel(bx, by, alpha_col)
-				earth_img.set_pixel(bx, by, ash_col)
 				to_remove.append(pos)
 			else:
 				fire_img.set_pixel(bx, by, Color(fire_val.r, fire_val.g, fire_val.b, fire_val.a))
@@ -131,14 +128,21 @@ func _process(_delta):
 		ignite_pixel(pos)
 	# Remove extinguished or burned out pixels from both dict and key array
 	for pos in to_remove:
-		burning_pixels.erase(pos)
-		var idx = burning_pixel_keys.find(pos)
-		if idx != -1:
-			burning_pixel_keys.remove_at(idx)
+		_extinguish_pixel(pos)
 	chunk_index = (chunk_index + 1) % CHUNK_DIVISOR
 	_update_fire_texture()
 	_update_earth_texture()
 
+func _extinguish_pixel(pos: Vector2i):
+	burning_pixels.erase(pos)
+	var idx = burning_pixel_keys.find(pos)
+	fire_img.set_pixel(pos.x, pos.y, alpha_col)
+	var old_col = earth_img.get_pixel(pos.x, pos.y)
+	var new_col = old_col.lerp(ash_col, 0.5)
+	earth_img.set_pixel(pos.x, pos.y, new_col)
+	if idx != -1:
+		burning_pixel_keys.remove_at(idx)
+		
 # Convert world position to texture coordinates
 func world_to_texture_coords(world_pos: Vector2) -> Vector2i:
 	# Assuming the fire texture covers the entire screen/viewport
