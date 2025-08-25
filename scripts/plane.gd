@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+enum PlaneType {Standard, Bomber}
+
+@export var type: PlaneType = PlaneType.Standard
 @export var speed: int = 400
 @export var rotation_speed: float = 1.5
 @export var cooldown: float = 1.5
@@ -7,8 +10,8 @@ extends CharacterBody2D
 var rotation_direction: float = 0
 var deploying: bool = false
 var last_deployment_state: bool = false
-var trail: Line2D
 var trail_scene: PackedScene = preload("res://scenes/trail.tscn")
+var bomb_scene: PackedScene = preload("res://scenes/bomb.tscn")
 var latest_trail: Node
 
 var cooling_down: bool = false
@@ -28,8 +31,14 @@ func _process(delta: float) -> void:
       deployed_after_cooldown = false
   else:
     if Input.is_action_just_pressed("deploy"):
-      latest_trail = trail_scene.instantiate()
-      get_parent().add_child(latest_trail)
+      if type == PlaneType.Standard:
+        latest_trail = trail_scene.instantiate()
+        get_parent().add_child(latest_trail)
+      elif type == PlaneType.Bomber:
+        latest_trail = bomb_scene.instantiate()
+        await get_tree().create_timer(latest_trail.delay).timeout
+        get_parent().add_child(latest_trail)
+        latest_trail.deploy()
       deployed_after_cooldown = true
     elif Input.is_action_just_released("deploy"):
       if deployed_after_cooldown:

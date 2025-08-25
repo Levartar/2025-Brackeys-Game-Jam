@@ -1,15 +1,14 @@
 extends Line2D
 
 @export var max_points: int = 100
+@export var trail_width: int = 100
+@export var distinguish_radius: int = 25
 @export var min_distance: int = 5
 @export var longevity: float = 0.5
 @export var fadout_duration: float = 0.5
-@export var trail_width: int = 100
-@export var distinguish_radius: int = 25
 
 var plane: CharacterBody2D
 var is_active: bool = true
-
 var terrain: Node2D
 
 func _ready() -> void:
