@@ -14,20 +14,19 @@ var water_img: Image
 var earth_tex: ImageTexture
 var fire_tex: ImageTexture
 var water_tex: ImageTexture
-var burning_pixels := {}
+
+# Burning pixel management
+const BURNING_LIST_SIZE = 4096 #960 #4096
+const BURNING_CHUNK_SIZE = 32 #256
+
+# Burning pixel management
+var burning_pixels := {}           # Dictionary: pos -> true
+var burning_pixel_keys := []       # Array of Vector2i
+var chunk_index := 0
+const CHUNK_DIVISOR = 20
 
 const ash_col = Color(0.2, 0.2, 0.2, 1.0)
 const alpha_col = Color(0, 0, 0, 0)
-
-func ignite_area(rect: Rect2i):
-	for x in range(rect.position.x, rect.position.x + rect.size.x):
-		for y in range(rect.position.y, rect.position.y + rect.size.y):
-			ignite_pixel(Vector2i(x, y)) # change indentation
-
-func ignite_pixel(pos: Vector2i):
-	fire_img.set_pixel(pos.x, pos.y, Color(1, 10.0, 0, 1)) # burning, 10s lifetime in green channel
-	burning_pixels[pos] = true
-	_update_fire_texture()
 
 func _ready():
 	# Create images
@@ -35,13 +34,7 @@ func _ready():
 	fire_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
 	water_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
 
-	# Clear images
-	#for x in TEX_SIZE.x:
-	#	for y in TEX_SIZE.y:
-	#		fire_img.set_pixel(x, y, Color(0, 0, 0, 0))
-	#		water_img.set_pixel(x, y, Color(0, 0, 0, 0))
-
-	# Copy earth image from EarthTexture node
+	# Init earth image from EarthTexture node
 	var earth_node = earth_rect
 	if earth_node.texture and earth_node.texture is ImageTexture:
 		earth_img = earth_node.texture.get_image().duplicate()
@@ -64,6 +57,16 @@ func _ready():
 
 	ignite_area(Rect2i(Vector2i(TEX_SIZE.x/2, TEX_SIZE.y/2), Vector2i(10, 10)))
 
+func ignite_area(rect: Rect2i):
+	for x in range(rect.position.x, rect.position.x + rect.size.x):
+		for y in range(rect.position.y, rect.position.y + rect.size.y):
+			ignite_pixel(Vector2i(x, y)) # change indentation
+
+func ignite_pixel(pos: Vector2i):
+	if not burning_pixels.has(pos):
+		burning_pixels[pos] = true
+		burning_pixel_keys.append(pos)
+		fire_img.set_pixel(pos.x, pos.y, Color(1, 1.0, 0, 1))
 
 func throw_water(rect: Rect2i):
 	for x in range(rect.position.x, rect.position.x + rect.size.x):
@@ -90,18 +93,24 @@ func ignite_random_neighbor(pos: Vector2i, to_ignite: Array) -> void:
 		to_ignite.append(Vector2i(nx, ny))
 
 
-func _process(delta):
+func _process(_delta):
 	var fps = Engine.get_frames_per_second()
 	label.text = "FPS: %d\nBurning Pixels: %d" % [fps, burning_pixels.size()]
 
-	var to_ignite = []
+	var total = burning_pixel_keys.size()
+	if total == 0:
+		return
+	var chunk_size = int(ceil(total / float(CHUNK_DIVISOR)))
+	var start = chunk_index * chunk_size
+	var end = min(start + chunk_size, total)
 	var to_remove = []
-	for pos in burning_pixels.keys():
+	var to_ignite = []
+	for i in range(start, end):
+		var pos = burning_pixel_keys[i]
 		var bx = pos.x
 		var by = pos.y
 		var fire_val = fire_img.get_pixel(bx, by)
 		if fire_val.r > 0.5:
-			# Extinguish if water or ash present
 			var water_val = water_img.get_pixel(bx, by)
 			var earth_val = earth_img.get_pixel(bx, by)
 			# Remove if earth material is ash, sand, or river, or if water is present
@@ -111,26 +120,26 @@ func _process(delta):
 				fire_img.set_pixel(bx, by, alpha_col)
 				to_remove.append(pos)
 				continue
-			# Decrease lifetime
-			fire_val.g -= delta
-			# If lifetime over, turn to ash
+			fire_val.g -= 1.0 / 12 # Fire burns for 4 secs
+			ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 			if fire_val.g <= 0.0:
 				fire_img.set_pixel(bx, by, alpha_col)
 				earth_img.set_pixel(bx, by, ash_col)
 				to_remove.append(pos)
 			else:
-				if int(fire_val.g * 2) != int((fire_val.g + delta) * 2): # triggers every 0.5s
-					ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 				fire_img.set_pixel(bx, by, Color(fire_val.r, fire_val.g, fire_val.b, fire_val.a))
 		else:
 			to_remove.append(pos)
 	# Ignite new fires
 	for pos in to_ignite:
-		fire_img.set_pixel(pos.x, pos.y, Color(1, 1, 0, 1))
-		burning_pixels[pos] = true
-	# Remove extinguished or burned out pixels
+		ignite_pixel(pos)
+	# Remove extinguished or burned out pixels from both dict and key array
 	for pos in to_remove:
 		burning_pixels.erase(pos)
+		var idx = burning_pixel_keys.find(pos)
+		if idx != -1:
+			burning_pixel_keys.remove_at(idx)
+	chunk_index = (chunk_index + 1) % CHUNK_DIVISOR
 	_update_fire_texture()
 	_update_earth_texture()
 
