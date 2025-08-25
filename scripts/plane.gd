@@ -1,10 +1,10 @@
 extends CharacterBody2D
 
-@export var speed = 400
-@export var rotation_speed = 1.5
-@export var cooldown = 1.5
+@export var speed: int = 400
+@export var rotation_speed: float = 1.5
+@export var cooldown: float = 1.5
 
-var rotation_direction = 0
+var rotation_direction: float = 0
 var deploying: bool = false
 var last_deployment_state: bool = false
 var trail: Line2D

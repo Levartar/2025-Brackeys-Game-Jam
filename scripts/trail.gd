@@ -1,7 +1,7 @@
 extends Line2D
 
-@export var max_points = 100
-@export var min_distance = 5
+@export var max_points: int = 100
+@export var min_distance: int = 5
 
 var plane: CharacterBody2D
 var is_active: bool = true
