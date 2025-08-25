@@ -1,6 +1,6 @@
 extends Node2D
 
-const TEX_SIZE := Vector2i(800, 800)
+const TEX_SIZE := Vector2i(400, 400)
 
 @onready var earth_rect: TextureRect = $Layers/EarthTexture
 @onready var fire_rect: TextureRect = $Layers/FireTexture
@@ -55,7 +55,7 @@ func _ready():
   water_rect.texture = water_tex
 
   #ignite_pixel(Vector2i(500, 500))
-  ignite_area(Rect2i(Vector2i(400, 400), Vector2i(50, 50)))
+  ignite_area(Rect2i(Vector2i(TEX_SIZE.x/2, TEX_SIZE.y/2), Vector2i(50, 50)))
 
 
 func throw_water(rect: Rect2i):
