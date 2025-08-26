@@ -14,11 +14,11 @@ const MATERIALS = {
       "ignition_chance": 0.0},
     "forest":   {
       "color": Color(0.75, 0.15, 0.26, 1.0), 
-      "lifetime": 10.0, 
+      "lifetime": 20.0, 
       "ignition_chance": 0.5},
     "grass":    {
       "color": Color(0.95, 0.38, 0.25, 1.0), 
-      "lifetime": 5.0, 
+      "lifetime": 3.0, 
       "ignition_chance": 1},
     "sand":     {
       "color": Color(0.95, 0.82, 0.74, 1.0), 
