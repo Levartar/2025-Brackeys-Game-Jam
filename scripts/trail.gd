@@ -21,17 +21,17 @@ func _ready() -> void:
 
 func _process(_delta):
   if is_active:
-    if plane == null: print("Trail could not find Plane instance!"); return
-    var pos = plane.global_position
-    if (points.is_empty() or pos.distance_to(points[-1]) > min_distance):
-      add_point(pos)
-      # if terrain and terrain.is_position_on_fire(pos):
-      if terrain:
-        terrain.drop_water_at_position(pos, distinguish_radius)
+	if plane == null: print("Trail could not find Plane instance!"); return
+	var pos = plane.global_position
+	if (points.is_empty() or pos.distance_to(points[-1]) > min_distance):
+	  add_point(pos)
+	  # if terrain and terrain.is_position_on_fire(pos):
+	  if terrain:
+		terrain.drop_water_at_position(pos, distinguish_radius)
 
-    if points.size() > max_points:
-      deactivate()
-      plane.activate_cooldown()
+	if points.size() > max_points:
+	  deactivate()
+	  plane.activate_cooldown()
 
 func deactivate() -> void:
   is_active = false
