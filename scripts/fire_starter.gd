@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 const TEX_SIZE := Vector2i(800, 800)
 
@@ -183,3 +183,7 @@ func get_material_from_color(color: Color):
 	if color_to_material.has(key):
 		return color_to_material[key]
 	return MATERIALS["none"]
+
+
+func _on_copy_seed_pressed() -> void:
+	$Layers/EarthTexture.copy_seed_to_clipboard()
