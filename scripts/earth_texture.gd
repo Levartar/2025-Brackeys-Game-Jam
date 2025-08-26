@@ -7,11 +7,32 @@ var earth_img: Image
 var earth_tex: ImageTexture
 
 # Material colors
-const COLOR_MOUNTAIN = Color(0.35, 0.01, 0.23, 1.0)
-const COLOR_FOREST   = Color(0.75, 0.15, 0.26, 1.0)
-const COLOR_GRASS    = Color(0.95, 0.38, 0.25, 1.0)
-const COLOR_SAND     = Color(0.95, 0.82, 0.74, 1.0)
-const COLOR_RIVER    = Color(0.04, 0.59, 0.65, 1.0)
+const MATERIALS = {
+    "mountain": {
+      "color": Color(0.35, 0.01, 0.23, 1.0), 
+      "lifetime": 1.0, 
+      "ignition_chance": 0.0},
+    "forest":   {
+      "color": Color(0.75, 0.15, 0.26, 1.0), 
+      "lifetime": 10.0, 
+      "ignition_chance": 0.5},
+    "grass":    {
+      "color": Color(0.95, 0.38, 0.25, 1.0), 
+      "lifetime": 5.0, 
+      "ignition_chance": 1},
+    "sand":     {
+      "color": Color(0.95, 0.82, 0.74, 1.0), 
+      "lifetime": 2.0, 
+      "ignition_chance": 0.1},
+    "river":    {
+      "color": Color(0.04, 0.59, 0.65, 1.0), 
+      "lifetime": 0.0, 
+      "ignition_chance": 0.0},
+    "none":    {
+      "color": Color(0.0, 0.0, 0.0, 0.0), 
+      "lifetime": 0.0, 
+      "ignition_chance": 0.0},
+}
 #Color(0.04, 0.59, 0.65, 1.0)
 #Color(0.15, 0.06, 0.15, 1.0)
 
@@ -36,15 +57,15 @@ func generate_map(optional_seed: int = randi()):
       # Map noise to material
       var color: Color
       if n < -0.4:
-        color = COLOR_RIVER
+        color = MATERIALS["river"]["color"]
       elif n < -0.3:
-        color = COLOR_SAND
+        color = MATERIALS["sand"]["color"]
       elif n < 0.0:
-        color = COLOR_GRASS
+        color = MATERIALS["grass"]["color"]
       elif n < 0.5:
-        color = COLOR_FOREST
+        color = MATERIALS["forest"]["color"]
       else:
-        color = COLOR_MOUNTAIN
+        color = MATERIALS["mountain"]["color"]
       earth_img.set_pixel(x, y, color)
 
 func update_texture():

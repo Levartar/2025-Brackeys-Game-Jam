@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
 [ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="2_i8saw"]
-[ext_resource type="Script" uid="uid://m5mpwpawmrwx" path="res://scenes/earth_texture.gd" id="3_xncx1"]
+[ext_resource type="Script" uid="uid://m5mpwpawmrwx" path="res://scripts/earth_texture.gd" id="3_xncx1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xncx1"]
 shader = ExtResource("2_i8saw")

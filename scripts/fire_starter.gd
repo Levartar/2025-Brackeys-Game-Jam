@@ -7,6 +7,9 @@ const TEX_SIZE := Vector2i(800, 800)
 @onready var water_rect: TextureRect = $Layers/WaterTexture
 @onready var label: Label = $Label
 
+const MATERIALS = preload("res://scripts/earth_texture.gd").MATERIALS
+var color_to_material = {} #Lookup HashMap
+
 
 var earth_img: Image
 var fire_img: Image
@@ -19,7 +22,7 @@ var water_tex: ImageTexture
 var burning_pixels := {}           # Dictionary: pos -> true
 var burning_pixel_keys := []       # Array of Vector2i
 var chunk_index := 0
-const CHUNK_DIVISOR = 20
+const CHUNK_DIVISOR = 10
 
 const ash_col = Color(0.2, 0.2, 0.2, 1)
 const alpha_col = Color(0, 0, 0, 0)
@@ -37,6 +40,12 @@ func _ready():
 	else:
 		push_error("EarthTexture node does not have a valid ImageTexture!")
 		return
+
+	#Init material lookup
+	for mat_name in MATERIALS.keys():
+		var mat_col = MATERIALS[mat_name].color
+		var key = color_to_key(mat_col)
+		color_to_material[key] = MATERIALS[mat_name]
 
 	fire_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
 	water_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
@@ -80,13 +89,14 @@ func _update_water_texture():
 	water_tex.update(water_img)
 
 # Ignite a random neighbor of a burning pixel
-func ignite_random_neighbor(pos: Vector2i, to_ignite: Array) -> void:
+func ignite_random_neighbor(pos: Vector2i, to_ignite: Array, chance: float) -> void:
 	var neighbors = [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]
 	var n = neighbors[randi() % neighbors.size()]
 	var nx = pos.x + n.x
 	var ny = pos.y + n.y
-	if nx >= 0 and nx < TEX_SIZE.x and ny >= 0 and ny < TEX_SIZE.y and earth_img.get_pixel(nx, ny).r != 0.2:
-		to_ignite.append(Vector2i(nx, ny))
+	if nx >= 0 and nx < TEX_SIZE.x and ny >= 0 and ny < TEX_SIZE.y:
+		if randf() < chance:
+			to_ignite.append(Vector2i(nx, ny))
 
 
 func _process(_delta):
@@ -107,16 +117,18 @@ func _process(_delta):
 		var by = pos.y
 		var fire_val = fire_img.get_pixel(bx, by)
 		if fire_val.r > 0.5:
-			var water_val = water_img.get_pixel(bx, by)
-			var earth_val = earth_img.get_pixel(bx, by)
+			var water_col = water_img.get_pixel(bx, by)
+			var earth_col = earth_img.get_pixel(bx, by)
+			var pixel_mat = get_material_from_color(earth_col)
 			# Remove if earth material is ash, sand, or river, or if water is present
-			if water_val.b > 0.5 \
-				or earth_val.r <=0.4\
-				or earth_val.b >=0.6:
+			if water_col.b > 0.5 \
+				or earth_col.r <=0.4\
+				or earth_col.b >=0.6:
 				to_remove.append(pos)
 				continue
-			fire_val.g -= 1.0 / 12 # Fire burns for 4 secs having 3 updates per second
-			ignite_random_neighbor(Vector2i(bx, by), to_ignite)
+			fire_val.g -= (1.0 / pixel_mat["lifetime"])* (int(CHUNK_DIVISOR) / 60.0) #pixel_mat["lifetime"] Lifetime in triggers per second
+			 #1.0 / 12 # Fire burns for 4 secs having 3 updates per second
+			ignite_random_neighbor(Vector2i(bx, by), to_ignite, pixel_mat["ignition_chance"])
 			if fire_val.g <= 0.0:
 				to_remove.append(pos)
 			else:
@@ -162,3 +174,13 @@ func drop_water_at_position(world_pos: Vector2, radius: int = 10):
 	var tex_pos = world_to_texture_coords(world_pos)
 	var rect = Rect2i(tex_pos.x - radius, tex_pos.y - radius, radius * 2, radius * 2)
 	throw_water(rect)
+
+func color_to_key(color: Color) -> String:
+		# Round to 2 decimal places for tolerance
+		return "%0.2f,%0.2f,%0.2f" % [color.r, color.g, color.b]
+
+func get_material_from_color(color: Color):
+	var key = color_to_key(color)
+	if color_to_material.has(key):
+		return color_to_material[key]
+	return MATERIALS["none"]
