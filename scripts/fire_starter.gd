@@ -89,14 +89,13 @@ func _update_water_texture():
 	water_tex.update(water_img)
 
 # Ignite a random neighbor of a burning pixel
-func ignite_random_neighbor(pos: Vector2i, to_ignite: Array, chance: float) -> void:
+func ignite_random_neighbor(pos: Vector2i, to_ignite: Array) -> void:
 	var neighbors = [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]
 	var n = neighbors[randi() % neighbors.size()]
 	var nx = pos.x + n.x
 	var ny = pos.y + n.y
 	if nx >= 0 and nx < TEX_SIZE.x and ny >= 0 and ny < TEX_SIZE.y:
-		if randf() < chance:
-			to_ignite.append(Vector2i(nx, ny))
+		to_ignite.append(Vector2i(nx, ny))
 
 
 func _process(_delta):
@@ -127,8 +126,8 @@ func _process(_delta):
 				to_remove.append(pos)
 				continue
 			fire_val.g -= (1.0 / pixel_mat["lifetime"])* (int(CHUNK_DIVISOR) / 60.0) #pixel_mat["lifetime"] Lifetime in triggers per second
-			 #1.0 / 12 # Fire burns for 4 secs having 3 updates per second
-			ignite_random_neighbor(Vector2i(bx, by), to_ignite, pixel_mat["ignition_chance"])
+			if randf() <= pixel_mat["ignition_chance"]:
+				ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 			if fire_val.g <= 0.0:
 				to_remove.append(pos)
 			else:
