@@ -18,11 +18,17 @@ var earth_tex: ImageTexture
 var fire_tex: ImageTexture
 var water_tex: ImageTexture
 
+
 # Burning pixel management
 var burning_pixels := {}           # Dictionary: pos -> true
 var burning_pixel_keys := []       # Array of Vector2i
 var chunk_index := 0
-const CHUNK_DIVISOR = 10
+const CHUNK_DIVISOR = 20
+
+# Water pixel management
+var water_pixels := {}             # Dictionary: pos -> true
+var water_pixel_keys := []         # Array of Vector2i
+var water_chunk_index := 0
 
 const ash_col = Color(0.2, 0.2, 0.2, 1)
 const alpha_col = Color(0, 0, 0, 0)
@@ -76,7 +82,18 @@ func ignite_pixel(pos: Vector2i):
 func throw_water(rect: Rect2i):
 	for x in range(rect.position.x, rect.position.x + rect.size.x):
 		for y in range(rect.position.y, rect.position.y + rect.size.y):
-			water_img.set_pixel(x, y, Color(0, 0, 1, 1)) # wet
+			var pos = Vector2i(x, y)
+			var col = water_img.get_pixel(x, y)
+			# Increase blue and alpha as specified
+			col.b += 1.0
+			col.a += 0.5
+			# Clamp values
+			col.b = clamp(col.b, 0.0, 1.0)
+			col.a = clamp(col.a, 0.0, 1.0)
+			water_img.set_pixel(x, y, col)
+			if not water_pixels.has(pos):
+				water_pixels[pos] = true
+				water_pixel_keys.append(pos)
 	_update_water_texture()
 
 func _update_earth_texture():
@@ -100,7 +117,8 @@ func ignite_random_neighbor(pos: Vector2i, to_ignite: Array) -> void:
 
 func _process(_delta):
 	var fps = Engine.get_frames_per_second()
-	label.text = "FPS: %d\nBurning Pixels: %d" % [fps, burning_pixels.size()]
+	label.text = "FPS: %d\nBurning Pixels: %d\nWater Pixels: %d" % [fps, burning_pixels.size(), water_pixels.size()]
+
 
 	var total = burning_pixel_keys.size()
 	if total == 0:
@@ -120,13 +138,12 @@ func _process(_delta):
 			var earth_col = earth_img.get_pixel(bx, by)
 			var pixel_mat = get_material_from_color(earth_col)
 			# Remove if earth material is ash, sand, or river, or if water is present
-			if water_col.b > 0.5 \
-				or earth_col.r <=0.4\
+			if earth_col.r <=0.4\
 				or earth_col.b >=0.6:
 				to_remove.append(pos)
 				continue
-			fire_val.g -= (1.0 / pixel_mat["lifetime"])* (int(CHUNK_DIVISOR) / 60.0) #pixel_mat["lifetime"] Lifetime in triggers per second
-			if randf() <= pixel_mat["ignition_chance"]:
+			fire_val.g -= (1.0 / pixel_mat["lifetime"])* (int(CHUNK_DIVISOR) / 60.0) #Lifetime in triggers per second
+			if randf() <= pixel_mat["ignition_chance"]-(water_col.b*4/pixel_mat["lifetime"]):
 				ignite_random_neighbor(Vector2i(bx, by), to_ignite)
 			if fire_val.g <= 0.0:
 				to_remove.append(pos)
@@ -141,6 +158,33 @@ func _process(_delta):
 	for pos in to_remove:
 		_extinguish_pixel(pos)
 	chunk_index = (chunk_index + 1) % CHUNK_DIVISOR
+
+	# Water evaporation: chunked like fire
+	#var total_water = water_pixel_keys.size()
+	#if total_water > 0:
+	#	var water_chunk_size = int(ceil(total_water / float(CHUNK_DIVISOR)))
+	#	var wstart = water_chunk_index * water_chunk_size
+	#	var wend = min(wstart + water_chunk_size, total_water)
+	#	var water_to_remove = []
+	#	var water_changed = false
+	#	for i in range(wstart, wend):
+	#		var pos = water_pixel_keys[i]
+	#		var col = water_img.get_pixel(pos.x, pos.y)
+	#		if col.b > 0.0 and col.a > 0.0:
+	#			col.a -= 0.03
+	#			water_img.set_pixel(pos.x, pos.y, col)
+	#			water_changed = true
+	#		else:
+	#			water_to_remove.append(pos)
+	#	for pos in water_to_remove:
+	#		water_pixels.erase(pos)
+	#		var idx = water_pixel_keys.find(pos)
+	#		if idx != -1:
+	#			water_pixel_keys.remove_at(idx)
+	#	if water_changed:
+	#		_update_water_texture()
+	#	water_chunk_index = (water_chunk_index + 1) % CHUNK_DIVISOR
+
 	_update_fire_texture()
 	_update_earth_texture()
 
