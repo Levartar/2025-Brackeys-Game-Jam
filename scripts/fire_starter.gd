@@ -31,6 +31,10 @@ var timer = 0
 @export var water_longevity: float = 3
 @export var water_fade_steps: float = 4
 
+var water_fade_thread: Thread
+var faded_water_img: Image
+var fade_in_progress := false
+
 func _ready():
   # Create images
   earth_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
@@ -122,8 +126,8 @@ func _process(_delta):
   timer += _delta
   if timer >= water_longevity / water_fade_steps:
     timer -= water_longevity / water_fade_steps
-    fade_water_alpha(1 / water_fade_steps)
-    _update_water_texture()
+    fade_water_alpha_threaded()
+    #_update_water_texture()
 
   var total = burning_pixel_keys.size()
   if total == 0:
@@ -176,6 +180,36 @@ func fade_water_alpha(fade_rate: float):
         if pixel.a < 0.01: # Set to fully transparent when nearly invisible
           pixel = Color(0, 0, 0, 0)
         water_img.set_pixel(x, y, pixel)
+
+func fade_water_alpha_threaded():
+    if fade_in_progress:
+        return # Prevent overlapping fades
+    fade_in_progress = true
+    faded_water_img = water_img.duplicate()
+    water_fade_thread = Thread.new()
+    water_fade_thread.start(_fade_water_thread_func)
+
+func _fade_water_thread_func():
+    var fade_rate = 1 / water_fade_steps
+    for x in range(TEX_SIZE.x):
+        for y in range(TEX_SIZE.y):
+            var pixel = faded_water_img.get_pixel(x, y)
+            if pixel.a > 0.01:
+                pixel.a -= fade_rate
+                if pixel.a < 0.01:
+                    pixel = Color(0, 0, 0, 0)
+                faded_water_img.set_pixel(x, y, pixel)
+    # Signal main thread to update
+    call_deferred("_on_water_fade_complete")
+    return
+
+func _on_water_fade_complete():
+    water_img = faded_water_img
+    _update_water_texture()
+    fade_in_progress = false
+    if water_fade_thread:
+        water_fade_thread.wait_to_finish()
+        water_fade_thread = null
 
 func _extinguish_pixel(pos: Vector2i):
   burning_pixels.erase(pos)
