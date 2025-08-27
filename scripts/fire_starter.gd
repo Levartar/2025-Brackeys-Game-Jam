@@ -74,10 +74,23 @@ func ignite_pixel(pos: Vector2i):
 		fire_img.set_pixel(pos.x, pos.y, Color(1, 1.0, 0, 1))
 
 func throw_water(rect: Rect2i):
-	for x in range(rect.position.x, rect.position.x + rect.size.x):
-		for y in range(rect.position.y, rect.position.y + rect.size.y):
-			water_img.set_pixel(x, y, Color(0, 0, 1, 1)) # wet
-	_update_water_texture()
+  for x in range(rect.position.x, rect.position.x + rect.size.x):
+    for y in range(rect.position.y, rect.position.y + rect.size.y):
+      if x >= 0 and x < TEX_SIZE.x and y >= 0 and y < TEX_SIZE.y:
+        water_img.set_pixel(x, y, Color(0, 0, 1, 1)) # wet
+  _update_water_texture()
+
+func throw_water_circle(center: Vector2i, radius: int):
+  var radius_squared = radius * radius
+  for x in range(center.x - radius, center.x + radius + 1):
+    for y in range(center.y - radius, center.y + radius + 1):
+      if x >= 0 and x < TEX_SIZE.x and y >= 0 and y < TEX_SIZE.y:
+        var dx = x - center.x
+        var dy = y - center.y
+        var distance_squared = dx * dx + dy * dy
+        if distance_squared <= radius_squared:
+          water_img.set_pixel(x, y, Color(0, 0, 1, 1)) # wet
+  _update_water_texture()
 
 func _update_earth_texture():
 	earth_tex.update(earth_img)
@@ -170,9 +183,8 @@ func is_position_on_fire(world_pos: Vector2) -> bool:
 
 # Drop water at world position
 func drop_water_at_position(world_pos: Vector2, radius: int = 10):
-	var tex_pos = world_to_texture_coords(world_pos)
-	var rect = Rect2i(tex_pos.x - radius, tex_pos.y - radius, radius * 2, radius * 2)
-	throw_water(rect)
+  var tex_pos = world_to_texture_coords(world_pos)
+  throw_water_circle(tex_pos, radius)
 
 func color_to_key(color: Color) -> String:
 		# Round to 2 decimal places for tolerance
@@ -183,7 +195,6 @@ func get_material_from_color(color: Color):
 	if color_to_material.has(key):
 		return color_to_material[key]
 	return MATERIALS["none"]
-
 
 func _on_copy_seed_pressed() -> void:
 	$Layers/EarthTexture.copy_seed_to_clipboard()
