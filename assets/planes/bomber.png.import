@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1nhcwy286k7k"
-path="res://.godot/imported/plane.png-33879e5de9b30785d06ff27a3ae341ea.ctex"
+uid="uid://ro02bht3tjdb"
+path="res://.godot/imported/bomber.png-2b5b406409d814ccd456e7a015e96cf7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/plane.png"
-dest_files=["res://.godot/imported/plane.png-33879e5de9b30785d06ff27a3ae341ea.ctex"]
+source_file="res://assets/planes/bomber.png"
+dest_files=["res://.godot/imported/bomber.png-2b5b406409d814ccd456e7a015e96cf7.ctex"]
 
 [params]
 

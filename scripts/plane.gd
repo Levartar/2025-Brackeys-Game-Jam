@@ -20,6 +20,10 @@ var cooling_down: bool = false
 var current_cool_down: float = 0.0
 var deployed_after_cooldown: bool = false
 
+var texture_standard: Texture2D = preload("res://assets/planes/standard.png")
+var texture_bomber: Texture2D = preload("res://assets/planes/bomber.png")
+var sprite: Sprite2D
+
 # testing vars
 var initial_position: Vector2
 var speed_mod: float = 1
@@ -29,6 +33,9 @@ func _ready() -> void:
   elif type == PlaneType.Bomber: cooldown = cooldown_values["Bomber"]
   current_cool_down = cooldown
   initial_position = position
+  sprite = $Sprite2D
+  if type == PlaneType.Standard: sprite.texture = texture_standard
+  elif type == PlaneType.Bomber: sprite.texture = texture_bomber
 
 func _process(delta: float) -> void:
   if cooling_down:
@@ -36,7 +43,7 @@ func _process(delta: float) -> void:
     if current_cool_down <= 0:
       cooling_down = false
       current_cool_down = cooldown
-      $Sprite2D.modulate = Color(1, 1, 1, 1)
+      if sprite: sprite.modulate = Color(1, 1, 1, 1)
       deployed_after_cooldown = false
   else:
     if Input.is_action_just_pressed("deploy"):
@@ -71,4 +78,4 @@ func _physics_process(delta):
 
 func activate_cooldown() -> void:
   cooling_down = true
-  $Sprite2D.modulate = Color(0.8, 0.8, 0.8, 1.0) # mid-grey
+  if sprite: sprite.modulate = Color(0.8, 0.8, 0.8, 1.0) # mid-grey
