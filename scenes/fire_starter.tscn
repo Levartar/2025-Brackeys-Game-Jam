@@ -1,14 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://5prbvrhmbio6"]
+[gd_scene load_steps=7 format=3 uid="uid://bc6kn2bd5ise0"]
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
+[ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="2_i8saw"]
+[ext_resource type="Script" uid="uid://m5mpwpawmrwx" path="res://scripts/earth_texture.gd" id="3_xncx1"]
 
-[node name="Node2D" type="Node2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xncx1"]
+shader = ExtResource("2_i8saw")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xncx1"]
+frequency = 0.003
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wrvky"]
+width = 800
+height = 800
+noise = SubResource("FastNoiseLite_xncx1")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ek5vj")
 
-[node name="FireSimulation" type="Node2D" parent="."]
-
 [node name="Layers" type="Control" parent="."]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,23 +34,43 @@ grow_vertical = 2
 size_flags_horizontal = 4
 
 [node name="EarthTexture" type="TextureRect" parent="Layers"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+material = SubResource("ShaderMaterial_xncx1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("NoiseTexture2D_wrvky")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("3_xncx1")
 
 [node name="FireTexture" type="TextureRect" parent="Layers"]
 z_index = 1
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+material = SubResource("ShaderMaterial_xncx1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="WaterTexture" type="TextureRect" parent="Layers"]
-modulate = Color(1, 1, 1, 0.1254902)
 z_index = 2
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Label" type="Label" parent="."]
+modulate = Color(0.20784314, 1, 1, 1)
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0

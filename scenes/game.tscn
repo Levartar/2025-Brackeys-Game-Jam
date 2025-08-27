@@ -1,14 +1,108 @@
-[gd_scene load_steps=3 format=3 uid="uid://6bypeyngjdqj"]
+[gd_scene load_steps=4 format=3 uid="uid://6bypeyngjdqj"]
 
-[ext_resource type="PackedScene" uid="uid://chmmcxfcwm47k" path="res://scenes/plane.tscn" id="1_uwrxv"]
-[ext_resource type="PackedScene" path="res://scenes/fire_starter.tscn" id="2_yqjtg"]
+[ext_resource type="Script" uid="uid://dugpuu6ilaikm" path="res://scripts/map_container.gd" id="1_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://bo4sk7qj01lqq" path="res://scenes/flight_sim.tscn" id="2_yqjtg"]
 
-[node name="Game" type="Node2D"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnu2h"]
+size = Vector2(100, 100)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.75, 0.75)
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Terrain" parent="." instance=ExtResource("2_yqjtg")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
 
-[node name="Plane" parent="." instance=ExtResource("1_uwrxv")]
-position = Vector2(297.99997, 274)
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Camera2D" type="Camera2D" parent="CanvasLayer/Control"]
+limit_left = 0
+limit_top = 0
+limit_right = 1920
+limit_bottom = 1080
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PauseButton" type="Button" parent="CanvasLayer/VBoxContainer/TopBar"]
+layout_mode = 2
+disabled = true
+text = "Pause"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MapContainer" type="Control" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(700, 700)
+layout_mode = 2
+size_flags_horizontal = 0
+script = ExtResource("1_lnu2h")
+
+[node name="Flight Sim" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" instance=ExtResource("2_yqjtg")]
+
+[node name="Plane" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
+is_test = true
+
+[node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Restart" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons"]
+layout_mode = 2
+text = "Restart
+"
+
+[node name="CopySeed" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons"]
+layout_mode = 2
+text = "Copy Seed
+"
+
+[node name="PlanesMenu" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Plane1" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+layout_mode = 2
+texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
+
+[node name="Plane2" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+layout_mode = 2
+texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
+
+[node name="Plane3" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+layout_mode = 2
+texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
+
+[node name="Plane4" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+layout_mode = 2
+texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
+
+[node name="BottomBar" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BottomButton" type="Button" parent="CanvasLayer/VBoxContainer/BottomBar"]
+layout_mode = 2
+disabled = true
+text = "Pause"
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/TopBar/PauseButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_pause_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons/Restart" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu/Plane1" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
+
+[editable path="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
