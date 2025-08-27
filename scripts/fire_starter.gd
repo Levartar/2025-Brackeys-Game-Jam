@@ -30,6 +30,8 @@ const alpha_col = Color(0, 0, 0, 0)
 var timer = 0
 @export var water_longevity: float = 3
 @export var water_fade_steps: float = 4
+var water_pixels = {} # Dictionary: Vector2i -> alpha_value
+var water_pixel_keys = []
 
 func _ready():
   # Create images
@@ -93,6 +95,10 @@ func throw_water_circle(center: Vector2i, radius: int):
         var dy = y - center.y
         var distance_squared = dx * dx + dy * dy
         if distance_squared <= radius_squared:
+          var pos = Vector2i(x, y)
+          if not water_pixels.has(pos):
+            water_pixel_keys.append(pos)
+          water_pixels[pos] = 1.0
           water_img.set_pixel(x, y, Color(0, 0, 1, 1)) # wet
   _update_water_texture()
 
@@ -122,7 +128,7 @@ func _process(_delta):
   timer += _delta
   if timer >= water_longevity / water_fade_steps:
     timer -= water_longevity / water_fade_steps
-    fade_water_alpha(1 / water_fade_steps)
+    fade_water(1 / water_fade_steps)
     _update_water_texture()
 
   var total = burning_pixel_keys.size()
@@ -167,15 +173,20 @@ func _process(_delta):
   _update_fire_texture()
   _update_earth_texture()
 
-func fade_water_alpha(fade_rate: float):
-  for x in range(TEX_SIZE.x):
-    for y in range(TEX_SIZE.y):
-      var pixel = water_img.get_pixel(x, y)
-      if pixel.a > 0.01: # Only process visible water pixels
-        pixel.a -= fade_rate
-        if pixel.a < 0.01: # Set to fully transparent when nearly invisible
-          pixel = Color(0, 0, 0, 0)
-        water_img.set_pixel(x, y, pixel)
+func fade_water(fade_rate: float):
+  var to_remove = []
+  for pos in water_pixel_keys:
+    var current_alpha = water_pixels[pos] - fade_rate
+    if current_alpha < 0.01:
+      water_img.set_pixel(pos.x, pos.y, Color(0, 0, 1, 0))
+      to_remove.append(pos)
+    else:
+      water_pixels[pos] = current_alpha
+      water_img.set_pixel(pos.x, pos.y, Color(0, 0, 1, current_alpha))
+
+  for pos in to_remove:
+    water_pixels.erase(pos)
+    water_pixel_keys.erase(pos)
 
 func _extinguish_pixel(pos: Vector2i):
   burning_pixels.erase(pos)

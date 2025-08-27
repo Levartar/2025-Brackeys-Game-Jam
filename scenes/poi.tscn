@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://lutbaot026ma"]
+
+[ext_resource type="Script" uid="uid://by006xmxw48nh" path="res://scripts/poi.gd" id="1_6r3jc"]
+[ext_resource type="Texture2D" uid="uid://u8naydn5wdeq" path="res://assets/poi_placeholder.png" id="2_5bacp"]
+[ext_resource type="Texture2D" uid="uid://cpdlvwj3y6sjh" path="res://assets/ui/countdown_progress.png" id="3_fhs6e"]
+[ext_resource type="Texture2D" uid="uid://cu3amyo600nfi" path="res://assets/ui/countdown_under.png" id="4_ojyob"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5bacp"]
+
+[node name="PoI" type="Node2D"]
+scale = Vector2(2.0000017, 2.0000017)
+script = ExtResource("1_6r3jc")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_5bacp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -1.9999999)
+scale = Vector2(0.040009387, 0.040009387)
+texture = ExtResource("2_5bacp")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+visible = false
+offset_left = -8.999992
+offset_top = -31.999973
+offset_right = 119.00001
+offset_bottom = 96.00003
+scale = Vector2(0.14000043, 0.14000043)
+fill_mode = 4
+texture_under = ExtResource("4_ojyob")
+texture_progress = ExtResource("3_fhs6e")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_body_exited"]
