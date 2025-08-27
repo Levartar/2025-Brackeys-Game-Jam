@@ -57,8 +57,11 @@ script = ExtResource("1_lnu2h")
 [node name="Flight Sim" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" instance=ExtResource("2_yqjtg")]
 
 [node name="Plane" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
-type = 1
 is_test = true
+
+[node name="Terrain" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
+water_longevity = 1.0
+water_fade_steps = 100.0
 
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
