@@ -22,7 +22,7 @@ func _ready() -> void:
 func _process(_delta):
   if is_active:
     if plane == null: print("Trail could not find Plane instance!"); return
-    var pos = plane.global_position
+    var pos = plane.position
     if (points.is_empty() or pos.distance_to(points[-1]) > min_distance):
       add_point(pos)
       # if terrain and terrain.is_position_on_fire(pos):

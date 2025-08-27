@@ -59,7 +59,6 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="WaterTexture" type="TextureRect" parent="Layers"]
-modulate = Color(1, 1, 1, 0.1254902)
 z_index = 2
 layout_mode = 1
 anchors_preset = 15
