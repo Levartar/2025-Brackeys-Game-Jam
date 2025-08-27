@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://6bypeyngjdqj"]
+[gd_scene load_steps=5 format=3 uid="uid://6bypeyngjdqj"]
 
 [ext_resource type="Script" uid="uid://dugpuu6ilaikm" path="res://scripts/map_container.gd" id="1_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://bo4sk7qj01lqq" path="res://scenes/flight_sim.tscn" id="2_yqjtg"]
+[ext_resource type="PackedScene" uid="uid://lutbaot026ma" path="res://scenes/poi.tscn" id="3_lnu2h"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnu2h"]
 size = Vector2(100, 100)
@@ -62,6 +63,15 @@ is_test = true
 [node name="Terrain" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
 water_longevity = 1.0
 water_fade_steps = 100.0
+
+[node name="PoI" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" instance=ExtResource("3_lnu2h")]
+position = Vector2(438, 215)
+
+[node name="PoI2" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" instance=ExtResource("3_lnu2h")]
+position = Vector2(732, 430)
+
+[node name="PoI3" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" instance=ExtResource("3_lnu2h")]
+position = Vector2(103, 438)
 
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2

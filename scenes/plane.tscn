@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://chmmcxfcwm47k"]
+[gd_scene load_steps=4 format=3 uid="uid://chmmcxfcwm47k"]
 
 [ext_resource type="Script" uid="uid://bixmy1rxh6nsm" path="res://scripts/plane.gd" id="1_206p1"]
 [ext_resource type="Texture2D" uid="uid://d1nhcwy286k7k" path="res://assets/planes/placeholder.png" id="1_dt3pm"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_206p1"]
+radius = 10.010662
+height = 42.019917
 
 [node name="Plane" type="CharacterBody2D"]
 z_index = 4
@@ -15,3 +19,7 @@ z_index = 1
 position = Vector2(0, -5)
 scale = Vector2(0.08000028, 0.08000028)
 texture = ExtResource("1_dt3pm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.045199066, -3.9997447)
+shape = SubResource("CapsuleShape2D_206p1")

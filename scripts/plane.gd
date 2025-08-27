@@ -28,6 +28,9 @@ var sprite: Sprite2D
 
 var last_rotation_is_left: bool = false
 
+var is_over_poi: bool = false
+var poi_interact: Callable
+
 # testing vars
 var initial_position: Vector2
 var speed_mod: float = 1
@@ -73,6 +76,8 @@ func _process(delta: float) -> void:
       deployed_after_cooldown = false
 
 func _physics_process(delta):
+  if Input.is_action_just_pressed("interact") and is_over_poi and poi_interact:
+    poi_interact.call()
   rotation_direction = Input.get_axis("left", "right")
   if rotation_direction < 0: last_rotation_is_left = true
   elif rotation_direction > 0: last_rotation_is_left = false
