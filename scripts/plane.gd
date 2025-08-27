@@ -6,6 +6,7 @@ enum PlaneType {Standard, Bomber}
 @export var speed: int = 400
 @export var rotation_speed: float = 1.5
 @export var cooldown_values = {"Standard": 1.5, "Bomber": 1.5}
+@export var is_test: bool = false # TODO: make sure is set to false in godot before release
 
 var rotation_direction: float = 0
 var deploying: bool = false
@@ -19,10 +20,15 @@ var cooling_down: bool = false
 var current_cool_down: float = 0.0
 var deployed_after_cooldown: bool = false
 
+# testing vars
+var initial_position: Vector2
+var speed_mod: float = 1
+
 func _ready() -> void:
   if type == PlaneType.Standard: cooldown = cooldown_values["Standard"]
   elif type == PlaneType.Bomber: cooldown = cooldown_values["Bomber"]
   current_cool_down = cooldown
+  initial_position = position
 
 func _process(delta: float) -> void:
   if cooling_down:
@@ -51,9 +57,17 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta):
   rotation_direction = Input.get_axis("left", "right")
-  velocity = transform.y * -1 * speed
+  velocity = transform.y * -1 * speed * speed_mod
   rotation += rotation_direction * rotation_speed * delta
   move_and_slide()
+  # testing controls
+  if is_test:
+    if Input.is_action_just_pressed("reset_plane"):
+      position = initial_position
+    if Input.is_action_pressed("boost_plane") and speed_mod == 1.0:
+      speed_mod = 2.0
+    elif !Input.is_action_pressed("boost_plane") and speed_mod == 2.0:
+      speed_mod = 1.0; print("reset speed_mod")
 
 func activate_cooldown() -> void:
   cooling_down = true
