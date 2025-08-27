@@ -59,8 +59,6 @@ script = ExtResource("1_lnu2h")
 [node name="Plane" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
 is_test = true
 
-[node name="Terrain" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
-
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 

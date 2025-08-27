@@ -119,6 +119,12 @@ func _process(_delta):
   var fps = Engine.get_frames_per_second()
   label.text = "FPS: %d\nBurning Pixels: %d" % [fps, burning_pixels.size()]
 
+  timer += _delta
+  if timer >= water_longevity / water_fade_steps:
+    timer -= water_longevity / water_fade_steps
+    fade_water_alpha(1 / water_fade_steps)
+    _update_water_texture()
+
   var total = burning_pixel_keys.size()
   if total == 0:
     return
@@ -160,11 +166,6 @@ func _process(_delta):
   chunk_index = (chunk_index + 1) % CHUNK_DIVISOR
   _update_fire_texture()
   _update_earth_texture()
-  timer += _delta
-  if timer >= water_longevity / water_fade_steps:
-    timer -= water_longevity / water_fade_steps
-    fade_water_alpha(1 / water_fade_steps)
-    _update_water_texture()
 
 func fade_water_alpha(fade_rate: float):
   for x in range(TEX_SIZE.x):
