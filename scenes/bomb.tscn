@@ -18,3 +18,4 @@ z_index = 2
 texture = SubResource("GradientTexture2D_4kkau")
 script = ExtResource("1_4kkau")
 delay = 0.8000000000029104
+distinguish_radius = 70
