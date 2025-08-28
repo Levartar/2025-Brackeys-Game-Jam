@@ -1,13 +1,13 @@
 extends Node2D
 
 # TODO: implement seed
-# TODO: prevent concurrent rescues
 
 @export var poi_num: int = 3
 @export var poi_border_margin: int = 75
 @export var poi_min_distance: int = 150
 @export var poi_fire_distance: int = 75
 
+var is_any_poi_waiting: bool = false
 var poi_scene: PackedScene = preload("res://scenes/poi.tscn")
 var terrain: Control
 var terrain_dim: Vector2i
@@ -42,3 +42,9 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
   pass
+
+func get_is_any_poi_waiting() -> bool:
+  return is_any_poi_waiting
+
+func set_is_any_poi_waiting(state: bool) -> void:
+  is_any_poi_waiting = state
