@@ -1,7 +1,5 @@
 extends Node2D
 
-# TODO: implement seed
-
 @export var poi_num: int = 3
 @export var poi_border_margin: int = 75
 @export var poi_min_distance: int = 150
