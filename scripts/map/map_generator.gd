@@ -11,7 +11,7 @@ const NORMAL_ROOM_WEIGHT := 12.0
 const EVENT_ROOM_WEIGHT := 5.0
 const SHOP_ROOM_WEIGHT := 2.5
 const CAMPFIRE_ROOM_WEIGHT := 4.0
-const Room = preload("res://scripts/room.gd")
+const Room = preload("res://scripts/map/room.gd")
 
 
 var random_room_type_weights = {
