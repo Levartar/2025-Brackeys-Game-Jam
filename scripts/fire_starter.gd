@@ -212,6 +212,15 @@ func is_position_on_fire(world_pos: Vector2) -> bool:
     return burning_pixels.has(tex_pos)
   return false
 
+# Check if a world position is in original water (from map generation)
+func is_position_in_waters(world_pos: Vector2) -> bool:
+  var tex_pos = world_to_texture_coords(world_pos)
+  if tex_pos.x >= 0 and tex_pos.x < TEX_SIZE.x and tex_pos.y >= 0 and tex_pos.y < TEX_SIZE.y:
+    var earth_color = earth_img.get_pixel(tex_pos.x, tex_pos.y)
+    # Check if it's water/river color (blue component >= 0.6 based on your fire logic)
+    return earth_color.b >= 0.6
+  return false
+
 # Drop water at world position
 func drop_water_at_position(world_pos: Vector2, radius: int = 10):
   var tex_pos = world_to_texture_coords(world_pos)

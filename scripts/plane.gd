@@ -91,7 +91,7 @@ func _physics_process(delta):
     if Input.is_action_pressed("boost_plane") and speed_mod == 1.0:
       speed_mod = 2.0
     elif !Input.is_action_pressed("boost_plane") and speed_mod == 2.0:
-      speed_mod = 1.0; print("reset speed_mod")
+      speed_mod = 1.0;
 
 func activate_cooldown() -> void:
   if cooldown > 0:
