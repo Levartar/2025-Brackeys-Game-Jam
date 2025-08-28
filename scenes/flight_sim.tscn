@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bo4sk7qj01lqq"]
+[gd_scene load_steps=4 format=3 uid="uid://bo4sk7qj01lqq"]
 
+[ext_resource type="Script" uid="uid://w8k7lwat878u" path="res://scripts/flight_sim.gd" id="1_2rvtq"]
 [ext_resource type="PackedScene" uid="uid://chmmcxfcwm47k" path="res://scenes/plane.tscn" id="1_rur5r"]
 [ext_resource type="PackedScene" uid="uid://bc6kn2bd5ise0" path="res://scenes/fire_starter.tscn" id="2_2rvtq"]
 
 [node name="Flight Sim" type="Node2D"]
+script = ExtResource("1_2rvtq")
 
 [node name="Plane" parent="." instance=ExtResource("1_rur5r")]
 position = Vector2(285, 190)
