@@ -71,7 +71,7 @@ position = Vector2(438, 215)
 position = Vector2(732, 430)
 
 [node name="PoI3" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" instance=ExtResource("3_lnu2h")]
-position = Vector2(103, 438)
+position = Vector2(362, 380)
 
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
