@@ -9,6 +9,8 @@ enum PlaneType {Standard, Bomber, Laser}
 @export var is_test: bool = false # TODO: make sure is set to false in godot before release
 
 var rotation_direction: float = 0
+var last_rotation_is_left: bool = false
+
 var deploying: bool = false
 var last_deployment_state: bool = false
 var trail_scene: PackedScene = preload("res://scenes/trail.tscn")
@@ -26,7 +28,10 @@ var texture_bomber: Texture2D = preload("res://assets/planes/bomber.png")
 var texture_laser: Texture2D = preload("res://assets/planes/laser.png")
 var sprite: Sprite2D
 
-var last_rotation_is_left: bool = false
+var sfx_standard: AudioStreamWAV = preload("res://assets/sfx/propeller-standard.wav")
+var sfx_bomber: AudioStreamWAV = preload("res://assets/sfx/propeller-bomber.wav")
+var sfx_laser: AudioStreamWAV = preload("res://assets/sfx/propeller-laser.wav")
+var audio_player: AudioStreamPlayer2D
 
 var is_over_poi: bool = false
 var poi_interaction: Callable
@@ -37,6 +42,8 @@ var initial_position: Vector2
 var speed_mod: float = 1
 
 func _ready() -> void:
+  sprite = $Sprite2D
+  audio_player = $AudioStreamPlayer2D
   initial_position = position
 
 func _process(delta: float) -> void:
@@ -94,16 +101,23 @@ func activate_cooldown() -> void:
     if sprite: sprite.modulate = Color(0.8, 0.8, 0.8, 1.0) # mid-grey
 
 func set_type(new_type: PlaneType) -> void:
+  audio_player.stop()
   type = new_type
-  if new_type == PlaneType.Standard: cooldown = cooldown_values["Standard"]
-  elif new_type == PlaneType.Bomber: cooldown = cooldown_values["Bomber"]
-  elif new_type == 2: cooldown = cooldown_values["Laser"]
-  current_cool_down = cooldown
-
-  sprite = $Sprite2D
-  if new_type == PlaneType.Standard: sprite.texture = texture_standard
-  elif new_type == PlaneType.Bomber: sprite.texture = texture_bomber
-  elif new_type == PlaneType.Laser: sprite.texture = texture_laser
+  if new_type == PlaneType.Standard:
+    cooldown = cooldown_values["Standard"]
+    sprite.texture = texture_standard
+    audio_player.stream = sfx_standard
+  elif new_type == PlaneType.Bomber:
+    cooldown = cooldown_values["Bomber"]
+    sprite.texture = texture_bomber
+    audio_player.stream = sfx_bomber
+  elif new_type == PlaneType.Laser:
+    cooldown = cooldown_values["Laser"]
+    sprite.texture = texture_laser
+    audio_player.stream = sfx_laser
+  cooling_down = false
+  current_cool_down = 0.0
+  audio_player.play()
 
 func get_rand_type() -> int:
   return randi_range(0, PlaneType.size() - 1)

@@ -23,3 +23,5 @@ texture = ExtResource("1_dt3pm")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.045199066, -3.9997447)
 shape = SubResource("CapsuleShape2D_206p1")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
