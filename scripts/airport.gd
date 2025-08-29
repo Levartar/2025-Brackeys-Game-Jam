@@ -12,6 +12,7 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
   if body.name == "Plane" and plane.has_passengers:
     plane.set_visibility(false)
+    plane.stop_audio()
     await get_tree().create_timer(plane_swap_time).timeout
     flight_sim.swap_plane()
     plane.set_visibility(true)

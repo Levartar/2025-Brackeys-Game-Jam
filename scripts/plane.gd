@@ -101,7 +101,6 @@ func activate_cooldown() -> void:
     if sprite: sprite.modulate = Color(0.8, 0.8, 0.8, 1.0) # mid-grey
 
 func set_type(new_type: PlaneType) -> void:
-  audio_player.stop()
   type = new_type
   if new_type == PlaneType.Standard:
     cooldown = cooldown_values["Standard"]
@@ -118,6 +117,9 @@ func set_type(new_type: PlaneType) -> void:
   cooling_down = false
   current_cool_down = 0.0
   audio_player.play()
+
+func stop_audio() -> void:
+  if audio_player: audio_player.stop()
 
 func get_rand_type() -> int:
   return randi_range(0, PlaneType.size() - 1)

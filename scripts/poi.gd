@@ -33,7 +33,6 @@ func _process(delta: float) -> void:
       if secs_since_prep >= prep_time:
         state = PoiState.Ready
         # print("State:", state) # test
-        plane.add_passengers()
     if terrain.is_position_on_fire(global_position): # TODO: check why it's unreliable
       state = PoiState.Burnt
       # print("State:", state) # test
@@ -52,9 +51,10 @@ func activate() -> void:
 func rescue() -> void:
   state = PoiState.Rescued
   # print("State:", state) # test
+  plane.add_passengers()
+  flight_sim.set_is_any_poi_waiting(false)
   prep_countdown.visible = false
   if hut_sprite: hut_sprite.modulate = Color(0.7, 0.7, 0.7, 1.0)
-  flight_sim.set_is_any_poi_waiting(false)
 
 func _on_body_entered(body: Node2D) -> void:
   if body.name == "Plane":
