@@ -1,9 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmbqjgrgbdfuo"]
+[gd_scene load_steps=3 format=3 uid="uid://dmbqjgrgbdfuo"]
 
 [ext_resource type="Script" uid="uid://c8qswyx0tbl35" path="res://scripts/laser.gd" id="1_xmihv"]
+[ext_resource type="AudioStream" uid="uid://6o5fl7mcxaf7" path="res://assets/sfx/water-laser.wav" id="2_a7dhc"]
 
 [node name="Laser" type="Line2D"]
 z_index = 3
 width = 100.0
 default_color = Color(0.22481102, 0.40539506, 0.883069, 1)
 script = ExtResource("1_xmihv")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_a7dhc")
+volume_db = -10.0

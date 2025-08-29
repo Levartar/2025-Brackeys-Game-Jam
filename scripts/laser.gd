@@ -14,6 +14,8 @@ var anchor: Vector2 = Vector2.ZERO
 var is_active: bool = true
 var range_mod: float
 
+var audio_player: AudioStreamPlayer2D
+
 func _ready() -> void:
   clear_points()
   plane = get_parent()
@@ -22,6 +24,8 @@ func _ready() -> void:
   z_as_relative = false
   set_range_mod()
   points = [anchor, anchor + Vector2(laser_range * range_mod, 0)]
+  audio_player = $AudioStreamPlayer2D
+  audio_player.play()
 
 func _process(delta):
   if is_active:
@@ -42,6 +46,7 @@ func deploy() -> void:
 
 func deactivate() -> void:
   is_active = false
+  audio_player.stop()
   queue_free()
 
 func set_range_mod() -> void:
