@@ -18,6 +18,9 @@ var earth_tex: ImageTexture
 var fire_tex: ImageTexture
 var water_tex: ImageTexture
 
+var audio_player: AudioStreamPlayer2D
+@export var fire_sfx_fade_duration: float = 3.0
+
 # Burning pixel management
 var burning_pixels := {} # Dictionary: pos -> true
 var burning_pixel_keys := [] # Array of Vector2i
@@ -67,6 +70,8 @@ func _ready():
   water_rect.texture = water_tex
 
   ignite_area(Rect2i(Vector2i(TEX_SIZE.x / 2, TEX_SIZE.y / 2), Vector2i(10, 10)))
+  audio_player = $AudioStreamPlayer2D
+  audio_player.play()
 
 func ignite_area(rect: Rect2i):
   for x in range(rect.position.x, rect.position.x + rect.size.x):
@@ -133,6 +138,9 @@ func _process(_delta):
 
   var total = burning_pixel_keys.size()
   if total == 0:
+    var tween := create_tween()
+    tween.tween_property(audio_player, "volume_db", -80.0, fire_sfx_fade_duration)
+    tween.tween_callback(Callable(audio_player, "stop"))
     return
   var chunk_size = int(ceil(total / float(CHUNK_DIVISOR)))
   var start = chunk_index * chunk_size

@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bc6kn2bd5ise0"]
+[gd_scene load_steps=8 format=3 uid="uid://bc6kn2bd5ise0"]
 
 [ext_resource type="Script" uid="uid://0dpeh4wg8o6f" path="res://scripts/fire_starter.gd" id="1_ek5vj"]
 [ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="2_i8saw"]
 [ext_resource type="Script" uid="uid://m5mpwpawmrwx" path="res://scripts/earth_texture.gd" id="3_xncx1"]
+[ext_resource type="AudioStream" uid="uid://sryocw38q4rw" path="res://assets/sfx/fire.wav" id="4_wrvky"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xncx1"]
 shader = ExtResource("2_i8saw")
@@ -15,7 +16,7 @@ width = 800
 height = 800
 noise = SubResource("FastNoiseLite_xncx1")
 
-[node name="Control" type="Control"]
+[node name="Terrain" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -74,3 +75,7 @@ modulate = Color(0.20784314, 1, 1, 1)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_wrvky")
+volume_db = 5.0
