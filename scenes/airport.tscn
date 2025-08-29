@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://dicwfap406jpu"]
+
+[ext_resource type="Texture2D" uid="uid://dcjfuhkcqqjv" path="res://assets/airport_placeholder.png" id="1_4acai"]
+[ext_resource type="Script" uid="uid://b8oysmv3bbsgl" path="res://scripts/airport.gd" id="1_xp0pq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4acai"]
+size = Vector2(7.3170643, 35.975563)
+
+[node name="Airport" type="Node2D"]
+z_index = 1
+z_as_relative = false
+position = Vector2(0, -59)
+scale = Vector2(3.280004, 3.280004)
+script = ExtResource("1_xp0pq")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_4acai")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4.7683716e-07)
+scale = Vector2(0.040009387, 0.040009387)
+texture = ExtResource("1_4acai")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_body_exited"]

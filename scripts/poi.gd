@@ -12,10 +12,12 @@ var hut_sprite: Sprite2D # TODO: replace
 
 var flight_sim: Node2D
 var terrain: Control
+var plane: CharacterBody2D
 
 func _ready() -> void:
   flight_sim = get_parent()
-  terrain = get_parent().get_node("Terrain")
+  terrain = flight_sim.get_node("Terrain")
+  plane = flight_sim.get_node("Plane")
   hut_sprite = $Sprite2D
   prep_countdown = $TextureProgressBar
   prep_countdown.max_value = prep_time
@@ -31,14 +33,15 @@ func _process(delta: float) -> void:
       if secs_since_prep >= prep_time:
         state = PoiState.Ready
         # print("State:", state) # test
-    if terrain.is_position_on_fire(global_position):
+        plane.add_passengers()
+    if terrain.is_position_on_fire(global_position): # TODO: check why it's unreliable
       state = PoiState.Burnt
       # print("State:", state) # test
       prep_countdown.visible = false
       if hut_sprite: hut_sprite.modulate = Color(0.2, 0.2, 0.2, 1.0) # TODO: replace
 
 func activate() -> void:
-  if not flight_sim.get_is_any_poi_waiting():
+  if not flight_sim.get_is_any_poi_waiting() and not plane.has_passengers:
     state = PoiState.Preparing
     # print("State:", state) # test
     prep_countdown.visible = true
@@ -56,11 +59,11 @@ func rescue() -> void:
 func _on_body_entered(body: Node2D) -> void:
   if body.name == "Plane":
     if state == PoiState.Initial:
-      body.poi_interact = activate
+      body.set_poi_interaction(activate)
     elif state == PoiState.Ready:
-      body.poi_interact = rescue
-    body.is_over_poi = true
+      body.set_poi_interaction(rescue)
+    body.set_is_over_poi(true)
     
 func _on_body_exited(body: Node2D) -> void:
   if body.name == "Plane":
-    body.is_over_poi = false
+    body.set_is_over_poi(false)

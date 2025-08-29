@@ -23,28 +23,21 @@ var deployed_after_cooldown: bool = false
 
 var texture_standard: Texture2D = preload("res://assets/planes/standard.png")
 var texture_bomber: Texture2D = preload("res://assets/planes/bomber.png")
-var texture_laser: Texture2D = preload("res://assets/planes/placeholder.png") # TODO: replace
+var texture_laser: Texture2D = preload("res://assets/planes/laser.png")
 var sprite: Sprite2D
 
 var last_rotation_is_left: bool = false
 
 var is_over_poi: bool = false
-var poi_interact: Callable
+var poi_interaction: Callable
+var has_passengers: bool = false
 
 # testing vars
 var initial_position: Vector2
 var speed_mod: float = 1
 
 func _ready() -> void:
-  if type == PlaneType.Standard: cooldown = cooldown_values["Standard"]
-  elif type == PlaneType.Bomber: cooldown = cooldown_values["Bomber"]
-  elif type == PlaneType.Laser: cooldown = cooldown_values["Laser"]
-  current_cool_down = cooldown
   initial_position = position
-  sprite = $Sprite2D
-  if type == PlaneType.Standard: sprite.texture = texture_standard
-  elif type == PlaneType.Bomber: sprite.texture = texture_bomber
-  elif type == PlaneType.Laser: sprite.texture = texture_laser
 
 func _process(delta: float) -> void:
   if cooling_down:
@@ -76,9 +69,9 @@ func _process(delta: float) -> void:
       deployed_after_cooldown = false
 
 func _physics_process(delta):
-  if Input.is_action_just_pressed("interact") and is_over_poi and poi_interact:
-    poi_interact.call()
-  rotation_direction = Input.get_axis("left", "right")
+  if Input.is_action_just_pressed("interact") and is_over_poi and poi_interaction:
+    poi_interaction.call()
+  rotation_direction = Input.get_axis("steer_left", "steer_right")
   if rotation_direction < 0: last_rotation_is_left = true
   elif rotation_direction > 0: last_rotation_is_left = false
   velocity = transform.y * -1 * speed * speed_mod
@@ -92,8 +85,44 @@ func _physics_process(delta):
       speed_mod = 2.0
     elif !Input.is_action_pressed("boost_plane") and speed_mod == 2.0:
       speed_mod = 1.0;
+    if Input.is_action_just_pressed("swap_plane_type"):
+      set_type(get_next_type())
 
 func activate_cooldown() -> void:
   if cooldown > 0:
     cooling_down = true
     if sprite: sprite.modulate = Color(0.8, 0.8, 0.8, 1.0) # mid-grey
+
+func set_type(new_type: PlaneType) -> void:
+  type = new_type
+  if new_type == PlaneType.Standard: cooldown = cooldown_values["Standard"]
+  elif new_type == PlaneType.Bomber: cooldown = cooldown_values["Bomber"]
+  elif new_type == 2: cooldown = cooldown_values["Laser"]
+  current_cool_down = cooldown
+
+  sprite = $Sprite2D
+  if new_type == PlaneType.Standard: sprite.texture = texture_standard
+  elif new_type == PlaneType.Bomber: sprite.texture = texture_bomber
+  elif new_type == PlaneType.Laser: sprite.texture = texture_laser
+
+func get_rand_type() -> int:
+  return randi_range(0, PlaneType.size() - 1)
+func get_next_type() -> int:
+  return (type + 1) % 3
+
+func set_pos(pos: Vector2) -> void:
+  position = pos
+func set_rot(rot: float) -> void:
+  rotation = rot
+func set_visibility(state: bool) -> void:
+  visible = state
+
+func set_is_over_poi(state: bool) -> void:
+  is_over_poi = state
+func set_poi_interaction(interaction: Callable) -> void:
+  poi_interaction = interaction
+
+func add_passengers() -> void:
+  has_passengers = true
+func remove_passengers() -> void:
+  has_passengers = false

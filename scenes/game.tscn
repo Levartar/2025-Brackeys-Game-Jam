@@ -110,3 +110,5 @@ text = "Pause"
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
 
 [editable path="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
+[editable path="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Plane"]
+[editable path="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Terrain"]
