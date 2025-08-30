@@ -24,7 +24,6 @@ func set_available(new_val: bool) -> void:
   elif not room.selected:
     animation_player.play("RESET")
 
-
 func set_room(new_room: Room) -> void:
   room = new_room
   position = room.position
@@ -39,13 +38,13 @@ func show_picked() -> void:
 func _on_map_room_selected(room: Room) -> void:
   if room == self.room and available:
     selected.emit(room)
-    animation_player.play("selected")
-    line_2d.modulate = Color.BURLYWOOD
-    print("Room selected: ", room.row, ", ", room.column)
+    if line_2d.visible == false:
+      animation_player.play("RESET")
+      animation_player.play("selected")
+      line_2d.visible = true
 
 func _input_event(_viewport, event, _shape_idx):
   if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
     #if available:
-        animation_player.play("selected")
-        selected.emit(room)
+    selected.emit(room)  
 

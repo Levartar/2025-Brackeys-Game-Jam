@@ -74,7 +74,7 @@ func create_map() -> void:
 func unlock_floor(which_floor: int = floors_climbed) -> void:
 	for map_room: MapRoom in rooms.get_children():
 		if map_room.row == which_floor:
-			map_room.available = true
+			map_room.set_available(true)
 
 #
 #func unlock_next_rooms() -> void:
@@ -122,12 +122,15 @@ func _connect_lines(room: MapRoom) -> void:
 
 
 func _on_map_room_clicked(room: MapRoom) -> void:
+	print("Room clicked:", room)
 	for map_room: MapRoom in rooms.get_children():
 		if map_room.room.row == room.row:
 			map_room.available = false
 
 
 func _on_map_room_selected(room: MapRoom) -> void:
+	print("Room selected in map emit:", room)
+	room._on_map_room_selected(self.room)
 	last_room = room
 	floors_climbed += 1
 	#Events.map_exited.emit(room)
