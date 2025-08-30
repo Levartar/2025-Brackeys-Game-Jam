@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://6bypeyngjdqj"]
+[gd_scene load_steps=16 format=3 uid="uid://6bypeyngjdqj"]
 
+[ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="1_0tnpc"]
 [ext_resource type="Script" uid="uid://dugpuu6ilaikm" path="res://scripts/map_container.gd" id="1_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://d3417nykjjs07" path="res://assets/kenneyUi/buttonSquare_beige.png" id="1_p57ef"]
 [ext_resource type="Texture2D" uid="uid://bbuci0bewgxvl" path="res://assets/kenneyUi/buttonSquare_beige_pressed.png" id="2_u5sy4"]
@@ -7,9 +8,19 @@
 [ext_resource type="Texture2D" uid="uid://mofouuvjb8fl" path="res://assets/kenneyUi/buttonLong_beige.png" id="3_lbhrr"]
 [ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="3_u5sy4"]
 [ext_resource type="Texture2D" uid="uid://bk85ysm4mshtb" path="res://assets/kenneyUi/buttonLong_beige_pressed.png" id="4_iywne"]
+[ext_resource type="Texture2D" uid="uid://c23smr70n1u3c" path="res://assets/kenneyUi/panel_beigeLight.png" id="8_gee14"]
+[ext_resource type="Texture2D" uid="uid://4fy8iatldp3y" path="res://assets/kenneyUi/barBack_verticalMid.png" id="10_kvpfn"]
+[ext_resource type="Texture2D" uid="uid://lp7i8dt0vl6m" path="res://assets/kenneyUi/barRed_verticalMid.png" id="11_dinhu"]
+[ext_resource type="Script" uid="uid://cfdk78sv8emxe" path="res://scenes/texture_progress_bar.gd" id="12_dinhu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vtaks"]
+shader = ExtResource("1_0tnpc")
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnu2h"]
 size = Vector2(100, 100)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kvuet"]
+shader = ExtResource("1_0tnpc")
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -34,24 +45,41 @@ limit_top = 0
 limit_right = 1920
 limit_bottom = 1080
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+[node name="PanelBeigeLight" type="TextureRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_vtaks")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("8_gee14")
 
-[node name="TopBar" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="PauseButton" type="TextureButton" parent="CanvasLayer/VBoxContainer/TopBar"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
 layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="PauseButton" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 0
 disabled = true
 texture_normal = ExtResource("1_p57ef")
 texture_pressed = ExtResource("2_u5sy4")
 
-[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/TopBar/PauseButton"]
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar/PauseButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,12 +95,12 @@ text = "||"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Restart" type="TextureButton" parent="CanvasLayer/VBoxContainer/TopBar"]
+[node name="Restart" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar"]
 layout_mode = 2
 texture_normal = ExtResource("3_lbhrr")
 texture_pressed = ExtResource("4_iywne")
 
-[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/TopBar/Restart"]
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar/Restart"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -87,12 +115,12 @@ text = "Restart"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CopySeed" type="TextureButton" parent="CanvasLayer/VBoxContainer/TopBar"]
+[node name="CopySeed" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar"]
 layout_mode = 2
 texture_normal = ExtResource("3_lbhrr")
 texture_pressed = ExtResource("4_iywne")
 
-[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer/TopBar/CopySeed"]
+[node name="Label2" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar/CopySeed"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -106,58 +134,83 @@ text = "Copy"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="MapContainer" type="Control" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+[node name="MapContainer" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(700, 700)
 layout_mode = 2
 size_flags_horizontal = 0
 script = ExtResource("1_lnu2h")
 
-[node name="Flight Sim" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" instance=ExtResource("2_yqjtg")]
+[node name="Flight Sim" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" instance=ExtResource("2_yqjtg")]
+unique_name_in_owner = true
 
-[node name="Plane" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
+[node name="Plane" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
 is_test = true
 
-[node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+[node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Spacer" type="Control" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons"]
+[node name="Spacer" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapButtons"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
-[node name="PlanesMenu" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+[node name="PlanesMenu" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Plane1" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
-layout_mode = 2
-texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
-
-[node name="Plane2" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+[node name="Plane1" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu"]
+visible = false
 layout_mode = 2
 texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
 
-[node name="Plane3" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+[node name="Plane2" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu"]
+visible = false
 layout_mode = 2
 texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
 
-[node name="Plane4" type="TextureButton" parent="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu"]
+[node name="Plane3" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu"]
+visible = false
 layout_mode = 2
 texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
 
-[node name="BottomBar" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+[node name="Plane4" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu"]
+visible = false
+layout_mode = 2
+texture_normal = SubResource("PlaceholderTexture2D_lnu2h")
+
+[node name="FireProgress" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BottomButton" type="Button" parent="CanvasLayer/VBoxContainer/BottomBar"]
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu/FireProgress"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_kvuet")
+layout_mode = 1
+offset_top = 800.0
+offset_right = 18.0
+offset_bottom = 818.0
+rotation = -1.5707964
+scale = Vector2(44.4, 2)
+step = 0.0
+texture_under = ExtResource("10_kvpfn")
+texture_progress = ExtResource("11_dinhu")
+tint_progress = Color(0.64705884, 0, 0.2784314, 0.6862745)
+script = ExtResource("12_dinhu")
+
+[node name="BottomBar" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BottomButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer/BottomBar"]
+visible = false
 layout_mode = 2
 disabled = true
 text = "Pause"
 
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/TopBar/PauseButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_pause_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/TopBar/Restart" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu/Plane1" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/PauseButton" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_pause_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/Restart" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu/Plane1" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
 
-[editable path="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]

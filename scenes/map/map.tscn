@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://chs8rmh3ha888"]
+[gd_scene load_steps=12 format=3 uid="uid://chs8rmh3ha888"]
 
 [ext_resource type="Script" uid="uid://om3qweywijpa" path="res://scripts/map/map.gd" id="1_a2pkv"]
 [ext_resource type="PackedScene" uid="uid://bqs5oskcd6drx" path="res://scenes/map/map_generator.tscn" id="1_sxf4j"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://be0o3pvnleq65" path="res://assets/kenneyUi/buttonLong_brown.png" id="3_fcby6"]
 [ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="4_04w0f"]
 [ext_resource type="Texture2D" uid="uid://pw54yf7yti7" path="res://assets/kenneyUi/buttonLong_brown_pressed.png" id="4_jcaow"]
+[ext_resource type="Texture2D" uid="uid://c23smr70n1u3c" path="res://assets/kenneyUi/panel_beigeLight.png" id="7_04w0f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a2pkv"]
 shader = ExtResource("2_tqkkf")
@@ -16,6 +17,9 @@ colors = PackedColorArray(0.26166332, 0, 0.082820915, 1, 0.58996195, 0.33318633,
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_fcby6"]
 gradient = SubResource("Gradient_ph54e")
 fill_from = Vector2(0.817757, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sqgf4"]
+shader = ExtResource("2_tqkkf")
 
 [node name="Map" type="Control"]
 layout_mode = 3
@@ -98,5 +102,21 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_fcby6")
+
+[node name="PanelBeigeLight" type="TextureRect" parent="Background"]
+material = SubResource("ShaderMaterial_sqgf4")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -383.375
+offset_top = -383.375
+offset_right = 383.375
+offset_bottom = 383.375
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+texture = ExtResource("7_04w0f")
 
 [connection signal="pressed" from="MarginContainer/Control/StartButton" to="." method="_on_start_button_pressed"]
