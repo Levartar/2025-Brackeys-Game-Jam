@@ -62,6 +62,8 @@ is_test = true
 [node name="Terrain" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
 water_longevity = 1.0
 water_fade_steps = 100.0
+fire_num_min = 3
+fire_num_max = 7
 
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
