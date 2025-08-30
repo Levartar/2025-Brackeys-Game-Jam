@@ -159,7 +159,7 @@ func deplete_tank(delta: float = 0.0) -> void:
     elif type == PlaneType.Laser:
       water_tank_level -= depletion_values["Laser"] * delta
     if water_tank_level <= 0: water_tank_level = 0
-    print(water_tank_level)
+    # print(water_tank_level) # test
     water_tank.value = water_tank_level
   else:
     print("Out of water!")

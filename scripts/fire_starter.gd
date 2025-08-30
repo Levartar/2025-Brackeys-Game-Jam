@@ -91,14 +91,14 @@ func _ready():
           too_close_to_others = true
       num_tries += 1
       if num_tries >= max_tries:
-        print("Didn't find suitable spot to start fire within " + str(num_tries) + " tries.")
+        # print("Didn't find suitable spot to start fire within " + str(num_tries) + " tries.") # test
         aborted = true
         max_tries *= 2 # increase number to reduce chance of another fire not spawning
         break
     if not aborted:
       ignite_area(Rect2i(new_pos, Vector2i(10, 10)))
       all_fire_pos.append(new_pos)
-      print("Started fire at ", new_pos) # test
+      # print("Started fire at ", new_pos) # test
 
   # Play fire SFX
   audio_player = $AudioStreamPlayer2D
