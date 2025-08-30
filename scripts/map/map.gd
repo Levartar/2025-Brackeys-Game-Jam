@@ -130,7 +130,6 @@ func _on_map_room_clicked(room: MapRoom) -> void:
 
 func _on_map_room_selected(room: MapRoom) -> void:
 	print("Room selected in map emit:", room)
-	room._on_map_room_selected(self.room)
 	last_room = room
 	floors_climbed += 1
 	#Events.map_exited.emit(room)
