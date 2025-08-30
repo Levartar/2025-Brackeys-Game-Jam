@@ -28,7 +28,7 @@ func _ready() -> void:
       var pos_x = randi_range(poi_border_margin, terrain_dim.x - poi_border_margin)
       var pos_y = randi_range(poi_border_margin, terrain_dim.y - poi_border_margin)
       new_pos = Vector2(pos_x, pos_y)
-      if not terrain.is_position_in_waters(new_pos): # check distance to waters
+      if not _is_close_to_waters(new_pos, 50.0): # check distance to waters
         var is_pos_too_close = false
         if new_pos.distance_to(fire_spawn_pos) < poi_fire_distance: # check distance to fire
           is_pos_too_close = true
@@ -48,13 +48,51 @@ func _ready() -> void:
       var airport = airport_scene.instantiate()
       airport_pos = new_pos
       airport.position = airport_pos
-      airport_rot = randf_range(0, 360)
-      airport.rotation = airport_rot
+      var new_rot: Dictionary = _get_boundary_aware_rotation(400.0)
+      airport_rot = randf_range(new_rot.min, new_rot.max)
+      airport.rotation_degrees = airport_rot
       add_child(airport)
   swap_plane()
 
 func _process(_delta: float) -> void:
   pass
+
+func _is_close_to_waters(pos: Vector2, min_distance: float) -> bool:
+  if terrain.is_position_in_waters(pos): return true
+  if terrain.is_position_in_waters(pos + Vector2(min_distance, 0)): return true
+  if terrain.is_position_in_waters(pos + Vector2(-min_distance, 0)): return true
+  if terrain.is_position_in_waters(pos + Vector2(0, min_distance)): return true
+  if terrain.is_position_in_waters(pos + Vector2(0, -min_distance)): return true
+  return false
+
+func _get_boundary_aware_rotation(threshold: float) -> Dictionary:
+  var min_rot: float = 0.0
+  var max_rot: float = 360.0
+  if airport_pos.y < threshold: # A: should be downward oriented
+    min_rot = 90.0
+    max_rot = 270.0
+  elif airport_pos.y > (terrain.TEX_SIZE.y - threshold): # B: should be upward oriented
+    min_rot = 270.0
+    max_rot = 90.0
+  elif airport_pos.x < threshold: # C: should be right-facing
+    min_rot = 0.0
+    max_rot = 180.0
+  elif airport_pos.x > (terrain.TEX_SIZE.x - threshold): # D: should be left-facing
+    min_rot = 180.0
+    max_rot = 360.0
+  if airport_pos.y < threshold and airport_pos.x < threshold: # AC
+    min_rot = 90.0
+    max_rot = 180.0
+  elif airport_pos.y < threshold and airport_pos.x > (terrain.TEX_SIZE.x - threshold): # AD
+    min_rot = 180.0
+    max_rot = 270.0
+  elif airport_pos.y > (terrain.TEX_SIZE.y - threshold) and airport_pos.x < threshold: # BC
+    min_rot = 0.0
+    max_rot = 90.0
+  elif airport_pos.y > (terrain.TEX_SIZE.y - threshold) and airport_pos.x > (terrain.TEX_SIZE.x - threshold): # BD
+    min_rot = 270.0
+    max_rot = 360.0
+  return {"min": min_rot, "max": max_rot}
 
 func swap_plane() -> void:
   plane.set_pos(airport_pos)

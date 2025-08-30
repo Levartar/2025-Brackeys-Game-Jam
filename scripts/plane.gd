@@ -129,7 +129,7 @@ func get_next_type() -> int:
 func set_pos(pos: Vector2) -> void:
   position = pos
 func set_rot(rot: float) -> void:
-  rotation = rot
+  rotation_degrees = rot
 func set_visibility(state: bool) -> void:
   visible = state
 
