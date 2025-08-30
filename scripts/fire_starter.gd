@@ -6,6 +6,7 @@ const TEX_SIZE := Vector2i(800, 800)
 @onready var fire_rect: TextureRect = $Layers/FireTexture
 @onready var water_rect: TextureRect = $Layers/WaterTexture
 @onready var label: Label = $Label
+@onready var progressBar: TextureProgressBar = null
 
 const MATERIALS = preload("res://scripts/earth_texture.gd").MATERIALS
 var color_to_material = {} # Lookup HashMap
@@ -103,6 +104,9 @@ func _ready():
   # Play fire SFX
   audio_player = $AudioStreamPlayer2D
   audio_player.play()
+
+  #get progress bar
+  call_deferred("_get_progress_bar")
 
 func ignite_area(rect: Rect2i):
   for x in range(rect.position.x, rect.position.x + rect.size.x):
@@ -205,6 +209,10 @@ func _process(_delta):
   # Ignite new fires
   for pos in to_ignite:
     ignite_pixel(pos)
+  
+  #update progress bar
+  if progressBar != null:
+    progressBar.update_progress(to_remove.size()*500 / float(TEX_SIZE.x * TEX_SIZE.y))#
   # Remove extinguished or burned out pixels from both dict and key array
   for pos in to_remove:
     _extinguish_pixel(pos)
@@ -277,3 +285,7 @@ func get_material_from_color(color: Color):
 
 func _on_copy_seed_pressed() -> void:
   $Layers/EarthTexture.copy_seed_to_clipboard()
+
+func _get_progress_bar():
+  progressBar = get_tree().get_root().get_node("Game/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu/FireProgress/TextureProgressBar")
+  print("Progress bar node:", progressBar)
