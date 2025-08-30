@@ -6,6 +6,7 @@ enum PlaneType {Standard, Bomber, Laser}
 @export var speed: int = 400
 @export var rotation_speed: float = 1.5
 @export var cooldown_values = {"Standard": 1.5, "Bomber": 1.5, "Laser": 0.0}
+@export var depletion_values = {"Standard": 80.0, "Bomber": 33.34, "Laser": 10.0}
 @export var is_test: bool = false # TODO: make sure is set to false in godot before release
 
 var rotation_direction: float = 0
@@ -37,6 +38,9 @@ var is_over_poi: bool = false
 var poi_interaction: Callable
 var has_passengers: bool = false
 
+var water_tank: ProgressBar
+var water_tank_level: float
+
 # testing vars
 var initial_position: Vector2
 var speed_mod: float = 1
@@ -44,6 +48,7 @@ var speed_mod: float = 1
 func _ready() -> void:
   sprite = $Sprite2D
   audio_player = $AudioStreamPlayer2D
+  water_tank = get_parent().get_node("WaterTank")
   initial_position = position
 
 func _process(delta: float) -> void:
@@ -55,7 +60,7 @@ func _process(delta: float) -> void:
       if sprite: sprite.modulate = Color(1, 1, 1, 1)
       deployed_after_cooldown = false
   else:
-    if Input.is_action_just_pressed("deploy"):
+    if Input.is_action_just_pressed("deploy") and is_water_in_tank():
       if type == PlaneType.Standard:
         latest_trail = trail_scene.instantiate()
         get_parent().add_child(latest_trail)
@@ -116,6 +121,8 @@ func set_type(new_type: PlaneType) -> void:
     audio_player.stream = sfx_laser
   cooling_down = false
   current_cool_down = 0.0
+  water_tank_level = water_tank.max_value
+  water_tank.value = water_tank_level
   audio_player.play()
 
 func stop_audio() -> void:
@@ -142,3 +149,20 @@ func add_passengers() -> void:
   has_passengers = true
 func remove_passengers() -> void:
   has_passengers = false
+
+func deplete_tank(delta: float = 0.0) -> void:
+  if water_tank_level > 0:
+    if type == PlaneType.Standard:
+      water_tank_level -= depletion_values["Standard"] * delta
+    elif type == PlaneType.Bomber:
+      water_tank_level -= depletion_values["Bomber"]
+    elif type == PlaneType.Laser:
+      water_tank_level -= depletion_values["Laser"] * delta
+    if water_tank_level <= 0: water_tank_level = 0
+    print(water_tank_level)
+    water_tank.value = water_tank_level
+  else:
+    print("Out of water!")
+
+func is_water_in_tank() -> bool:
+  return water_tank_level > 0

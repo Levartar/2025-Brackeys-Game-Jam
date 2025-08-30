@@ -28,7 +28,8 @@ func _ready() -> void:
   audio_player.play()
 
 func _process(delta):
-  if is_active:
+  if not plane.is_water_in_tank(): deactivate()
+  elif is_active:
     angle += laser_speed * delta
     var oscillation = sin(angle * 3.0) # x3 for faster oscillation
     var min_deg = - laser_spread # + deg_mod
@@ -38,7 +39,8 @@ func _process(delta):
     points[1] = moving_end
     var pos = plane.position + moving_end.rotated(plane.rotation)
     if terrain:
-        terrain.drop_water_at_position(pos, distinguish_radius)
+      terrain.drop_water_at_position(pos, distinguish_radius)
+      plane.deplete_tank(delta)
 
 func deploy() -> void:
     if plane == null: print("Laser could not find Plane instance!"); return

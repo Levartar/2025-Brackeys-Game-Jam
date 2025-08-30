@@ -13,6 +13,11 @@ rotation = 0.011300007
 script = ExtResource("1_206p1")
 type = 2
 speed = 100
+depletion_values = {
+"Bomber": 33.33999999999651,
+"Laser": 10.0,
+"Standard": 80.0
+}
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = 1

@@ -19,8 +19,9 @@ func _ready() -> void:
   width = trail_width
   # default_color = Color.WHITE
 
-func _process(_delta):
-  if is_active:
+func _process(delta):
+  if not plane.is_water_in_tank(): deactivate()
+  elif is_active:
     if plane == null: print("Trail could not find Plane instance!"); return
     var pos = plane.position
     if (points.is_empty() or pos.distance_to(points[-1]) > min_distance):
@@ -28,6 +29,7 @@ func _process(_delta):
       # if terrain and terrain.is_position_on_fire(pos):
       if terrain:
         terrain.drop_water_at_position(pos, distinguish_radius)
+        plane.deplete_tank(delta)
 
   if points.size() > max_points:
     deactivate()
