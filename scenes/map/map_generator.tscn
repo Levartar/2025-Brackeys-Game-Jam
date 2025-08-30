@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://ddpuq20kp3pcp" path="res://scripts/map/map_generator.gd" id="1_cjukf"]
 
-[node name="MapGenerator" type="Node2D"]
+[node name="MapGenerator" type="Node"]
 script = ExtResource("1_cjukf")

@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://chs8rmh3ha888"]
+[gd_scene load_steps=7 format=3 uid="uid://chs8rmh3ha888"]
 
+[ext_resource type="Script" uid="uid://om3qweywijpa" path="res://scripts/map/map.gd" id="1_a2pkv"]
 [ext_resource type="PackedScene" uid="uid://bqs5oskcd6drx" path="res://scenes/map/map_generator.tscn" id="1_sxf4j"]
+[ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="2_tqkkf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a2pkv"]
+shader = ExtResource("2_tqkkf")
+
+[sub_resource type="Gradient" id="Gradient_ph54e"]
+colors = PackedColorArray(1, 0.5384071, 0.4268369, 1, 0.36078432, 0.72156864, 0.72156864, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fcby6"]
+gradient = SubResource("Gradient_ph54e")
+fill_from = Vector2(0.57009345, 1)
 
 [node name="Map" type="Control"]
 layout_mode = 3
@@ -9,5 +21,28 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_a2pkv")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Lines" type="Node2D" parent="Visuals"]
+unique_name_in_owner = true
+z_index = 1
+
+[node name="Rooms" type="Node2D" parent="Visuals"]
+unique_name_in_owner = true
+z_index = 2
 
 [node name="MapGenerator" parent="." instance=ExtResource("1_sxf4j")]
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="Background"]
+material = SubResource("ShaderMaterial_a2pkv")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_fcby6")

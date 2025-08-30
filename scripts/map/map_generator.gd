@@ -1,17 +1,16 @@
-extends Node2D
+extends Node
 class_name MapGenerator
 
-const X_DIST := 30
-const Y_DIST := 25
+const X_DIST := 60
+const Y_DIST := 50
 const PLACEMENT_RANDOMNESS := 5
-const FLOORS := 15
-const MAP_WIDTH := 7
-const PATHS := 6
+const FLOORS := 6
+const MAP_WIDTH := 6
+const PATHS := 3
 const NORMAL_ROOM_WEIGHT := 12.0
 const EVENT_ROOM_WEIGHT := 5.0
 const SHOP_ROOM_WEIGHT := 2.5
 const CAMPFIRE_ROOM_WEIGHT := 4.0
-const Room = preload("res://scripts/map/room.gd")
 
 
 var random_room_type_weights = {
@@ -33,7 +32,7 @@ func generate_map() -> Array[Array]:
 		for i in FLOORS - 1:
 			current_j = _setup_connection(i, current_j)
 	
-	_setup_boss_room()
+	#_setup_boss_room()
 	_setup_random_room_weights()
 	_setup_room_types()
 	
@@ -44,10 +43,10 @@ func _generate_initial_grid() -> Array[Array]:
 	var result: Array[Array] = []
 	
 	for i in FLOORS:
-		var adjacent_rooms: Array[Room]= []
+		var adjacent_rooms: Array[MapRoom]= []
 		
 		for j in MAP_WIDTH:
-			var current_room := Room.new()
+			var current_room := MapRoom.new()
 			var offset := Vector2(randf(), randf()) * PLACEMENT_RANDOMNESS
 			current_room.position = Vector2(j * X_DIST, i * -Y_DIST) + offset
 			current_room.row = i
@@ -84,8 +83,8 @@ func _get_random_starting_points() -> Array[int]:
 
 
 func _setup_connection(i: int, j: int) -> int:
-	var next_room: Room = null
-	var current_room := map_data[i][j] as Room
+	var next_room: MapRoom = null
+	var current_room := map_data[i][j] as MapRoom
 	
 	while not next_room or _would_cross_existing_path(i, j, next_room):
 		var random_j := clampi(randi_range(j - 1, j + 1), 0, MAP_WIDTH - 1)
@@ -96,9 +95,9 @@ func _setup_connection(i: int, j: int) -> int:
 	return next_room.column
 
 
-func _would_cross_existing_path(i: int, j: int, room: Room) -> bool:
-	var left_neighbour: Room
-	var right_neighbour: Room
+func _would_cross_existing_path(i: int, j: int, room: MapRoom) -> bool:
+	var left_neighbour: MapRoom
+	var right_neighbour: MapRoom
 	
 	# if j == 0, there's no left neighbour
 	if j > 0:
@@ -109,13 +108,13 @@ func _would_cross_existing_path(i: int, j: int, room: Room) -> bool:
 	
 	# can't cross in right dir if right neighbour goes to left
 	if right_neighbour and room.column > j:
-		for next_room: Room in right_neighbour.next_rooms:
+		for next_room: MapRoom in right_neighbour.next_rooms:
 			if next_room.column < room.column:
 				return true
 	
 	# can't cross in left dir if left neighbour goes to right
 	if left_neighbour and room.column < j:
-		for next_room: Room in left_neighbour.next_rooms:
+		for next_room: MapRoom in left_neighbour.next_rooms:
 			if next_room.column > room.column:
 				return true
 	
@@ -124,12 +123,12 @@ func _would_cross_existing_path(i: int, j: int, room: Room) -> bool:
 
 func _setup_boss_room() -> void:
 	var middle := floori(MAP_WIDTH * 0.5)
-	var boss_room := map_data[FLOORS - 1][middle] as Room
+	var boss_room := map_data[FLOORS - 1][middle] as MapRoom
 	
 	for j in MAP_WIDTH:
-		var current_room = map_data[FLOORS - 2][j] as Room
+		var current_room = map_data[FLOORS - 2][j] as MapRoom
 		if current_room.next_rooms:
-			current_room.next_rooms = [] as Array[Room]
+			current_room.next_rooms = [] as Array[MapRoom]
 			current_room.next_rooms.append(boss_room)
 			
 	boss_room.type = Room.Type.BOSS
@@ -147,26 +146,26 @@ func _setup_random_room_weights() -> void:
 
 func _setup_room_types() -> void:
 	# first floor is always a battle
-	for room: Room in map_data[0]:
+	for room: MapRoom in map_data[0]:
 		if room.next_rooms.size() > 0:
 				room.type = Room.Type.NORMAL
 				#Get randomly generated Plane Game Map
 				#room.battle_stats = battle_stats_pool.get_random_battle_for_tier(0)
 
 	# 9th floor is always a treasure
-	for room: Room in map_data[8]:
-		if room.next_rooms.size() > 0:
-				room.type = Room.Type.TREASURE
+	#for room: MapRoom in map_data[8]:
+	#	if room.next_rooms.size() > 0:
+	#			room.type = Room.Type.TREASURE
 	
 	# rest of rooms
 	for current_floor in map_data:
-		for room: Room in current_floor:
-			for next_room: Room in room.next_rooms:
+		for room: MapRoom in current_floor:
+			for next_room: MapRoom in room.next_rooms:
 				if next_room.type == Room.Type.NOT_ASSIGNED:
 					_set_room_randomly(next_room)
 
 
-func _set_room_randomly(room_to_set: Room) -> void:
+func _set_room_randomly(room_to_set: MapRoom) -> void:
 	var campfire_below_4 := true
 	var consecutive_campfire := true
 	var consecutive_shop := true
@@ -201,25 +200,25 @@ func _set_room_randomly(room_to_set: Room) -> void:
 		#room_to_set.event_scene = event_room_pool.get_random()
 
 
-func _room_has_parent_of_type(room: Room, type: Room.Type) -> bool:
-	var parents: Array[Room] = []
+func _room_has_parent_of_type(room: MapRoom, type: Room.Type) -> bool:
+	var parents: Array[MapRoom] = []
 	# left parent
 	if room.column > 0 and room.row > 0:
-		var parent_candidate := map_data[room.row - 1][room.column - 1] as Room
+		var parent_candidate := map_data[room.row - 1][room.column - 1] as MapRoom
 		if parent_candidate.next_rooms.has(room):
 			parents.append(parent_candidate)
 	# parent below
 	if room.row > 0:
-		var parent_candidate := map_data[room.row - 1][room.column] as Room
+		var parent_candidate := map_data[room.row - 1][room.column] as MapRoom
 		if parent_candidate.next_rooms.has(room):
 			parents.append(parent_candidate)
 	# right parent
 	if room.column < MAP_WIDTH-1 and room.row > 0:
-		var parent_candidate := map_data[room.row - 1][room.column + 1] as Room
+		var parent_candidate := map_data[room.row - 1][room.column + 1] as MapRoom
 		if parent_candidate.next_rooms.has(room):
 			parents.append(parent_candidate)
 	
-	for parent: Room in parents:
+	for parent: MapRoom in parents:
 		if parent.type == type:
 			return true
 	
