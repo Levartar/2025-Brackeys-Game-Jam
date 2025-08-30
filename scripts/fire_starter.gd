@@ -18,6 +18,9 @@ var earth_tex: ImageTexture
 var fire_tex: ImageTexture
 var water_tex: ImageTexture
 
+var audio_player: AudioStreamPlayer2D
+@export var fire_sfx_fade_duration: float = 3.0
+
 # Burning pixel management
 var burning_pixels := {} # Dictionary: pos -> true
 var burning_pixel_keys := [] # Array of Vector2i
@@ -32,6 +35,11 @@ var timer = 0
 @export var water_fade_steps: float = 4
 var water_pixels = {} # Dictionary: Vector2i -> alpha_value
 var water_pixel_keys = []
+
+@export var fires_num_min: int = 2
+@export var fires_num_max: int = 7
+@export var fires_min_distance: int = 100
+@export var fires_border_margin: int = 50
 
 func _ready():
   # Create images
@@ -66,7 +74,35 @@ func _ready():
   fire_rect.texture = fire_tex
   water_rect.texture = water_tex
 
-  ignite_area(Rect2i(Vector2i(TEX_SIZE.x / 2, TEX_SIZE.y / 2), Vector2i(10, 10)))
+  # Spawn fires
+  var all_fire_pos: Array[Vector2i] = []
+  var max_tries: int = 1000
+  for i in randi_range(fires_num_min, fires_num_max):
+    var new_pos = null
+    var too_close_to_others: bool = false
+    var num_tries: int = 0
+    var aborted: bool = false
+    while new_pos == null or is_position_in_waters(new_pos) or too_close_to_others:
+      var new_pos_x: int = randi_range(fires_border_margin, TEX_SIZE.x - fires_border_margin)
+      var new_pos_y: int = randi_range(fires_border_margin, TEX_SIZE.y - fires_border_margin)
+      new_pos = Vector2i(new_pos_x, new_pos_y)
+      for j in range(all_fire_pos.size()):
+        if new_pos.distance_to(all_fire_pos[j]) < fires_min_distance:
+          too_close_to_others = true
+      num_tries += 1
+      if num_tries >= max_tries:
+        print("Didn't find suitable spot to start fire within " + str(num_tries) + " tries.")
+        aborted = true
+        max_tries *= 2 # increase number to reduce chance of another fire not spawning
+        break
+    if not aborted:
+      ignite_area(Rect2i(new_pos, Vector2i(10, 10)))
+      all_fire_pos.append(new_pos)
+      print("Started fire at ", new_pos) # test
+
+  # Play fire SFX
+  audio_player = $AudioStreamPlayer2D
+  audio_player.play()
 
 func ignite_area(rect: Rect2i):
   for x in range(rect.position.x, rect.position.x + rect.size.x):
@@ -133,6 +169,9 @@ func _process(_delta):
 
   var total = burning_pixel_keys.size()
   if total == 0:
+    var tween := create_tween()
+    tween.tween_property(audio_player, "volume_db", -80.0, fire_sfx_fade_duration)
+    tween.tween_callback(Callable(audio_player, "stop"))
     return
   var chunk_size = int(ceil(total / float(CHUNK_DIVISOR)))
   var start = chunk_index * chunk_size

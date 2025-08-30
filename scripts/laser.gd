@@ -14,6 +14,8 @@ var anchor: Vector2 = Vector2.ZERO
 var is_active: bool = true
 var range_mod: float
 
+var audio_player: AudioStreamPlayer2D
+
 func _ready() -> void:
   clear_points()
   plane = get_parent()
@@ -22,9 +24,12 @@ func _ready() -> void:
   z_as_relative = false
   set_range_mod()
   points = [anchor, anchor + Vector2(laser_range * range_mod, 0)]
+  audio_player = $AudioStreamPlayer2D
+  audio_player.play()
 
 func _process(delta):
-  if is_active:
+  if not plane.is_water_in_tank(): deactivate()
+  elif is_active:
     angle += laser_speed * delta
     var oscillation = sin(angle * 3.0) # x3 for faster oscillation
     var min_deg = - laser_spread # + deg_mod
@@ -34,7 +39,8 @@ func _process(delta):
     points[1] = moving_end
     var pos = plane.position + moving_end.rotated(plane.rotation)
     if terrain:
-        terrain.drop_water_at_position(pos, distinguish_radius)
+      terrain.drop_water_at_position(pos, distinguish_radius)
+      plane.deplete_tank(delta)
 
 func deploy() -> void:
     if plane == null: print("Laser could not find Plane instance!"); return
@@ -42,6 +48,7 @@ func deploy() -> void:
 
 func deactivate() -> void:
   is_active = false
+  audio_player.stop()
   queue_free()
 
 func set_range_mod() -> void:
