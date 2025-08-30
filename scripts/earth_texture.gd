@@ -1,6 +1,6 @@
 extends TextureRect
 
-const TEX_SIZE := Vector2i(800, 800)
+var TEX_SIZE := Vector2i(800, 800)
 var seed: int = 0
 var noise := FastNoiseLite.new()
 var earth_img: Image
@@ -37,7 +37,12 @@ const MATERIALS = {
 #Color(0.15, 0.06, 0.15, 1.0)
 
 func _ready():
-  generate_map()
+  TEX_SIZE = Vector2i(get_rect().size.x, get_rect().size.y)
+  seed = GameManager.map_seed
+  if seed != 0:
+    generate_map(seed)
+  else:
+    generate_map()
   update_texture()
   print("Generated map with seed: %d" % seed)
 
@@ -48,7 +53,10 @@ func generate_map(optional_seed: int = randi()):
     seed = optional_seed
   noise.seed = seed
   noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-  noise.frequency = 0.003
+  if TEX_SIZE.x < 100:
+    noise.frequency = 0.03
+  else:
+    noise.frequency = 0.003 
 
   earth_img = Image.create(TEX_SIZE.x, TEX_SIZE.y, false, Image.FORMAT_RGBA8)
   for x in range(TEX_SIZE.x):
