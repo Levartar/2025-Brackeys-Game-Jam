@@ -12,6 +12,7 @@ func _ready():
 
 
 func _on_restart_pressed() -> void:
+	GameManager.map_seed = randi()
 	get_tree().reload_current_scene()
 
 

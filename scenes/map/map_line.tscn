@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b5v2dj5bchafn"]
 
-[ext_resource type="Texture2D" uid="uid://kko8uw8d2s1h" path="res://assets/tile_0121.png" id="1_hx6oq"]
+[ext_resource type="Texture2D" uid="uid://kko8uw8d2s1h" path="res://assets/kenneyUi/tile_0121.png" id="1_hx6oq"]
 
 [node name="MapLine" type="Line2D"]
 texture_repeat = 2

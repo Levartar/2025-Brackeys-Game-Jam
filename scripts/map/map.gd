@@ -15,6 +15,7 @@ var map_data: Array[Array]
 var floors_climbed: int
 var last_room: MapRoom
 var camera_edge_y: float
+var selected_seed: int = 0
 
 
 func _ready() -> void:
@@ -68,7 +69,7 @@ func create_map() -> void:
 
 	var map_width_pixels := MapGenerator.X_DIST * (MapGenerator.MAP_WIDTH - 1)
 	visuals.position.x = (get_viewport_rect().size.x - map_width_pixels) / 2
-	visuals.position.y = get_viewport_rect().size.y / 2
+	visuals.position.y = get_viewport_rect().size.y / 1.2
 
 
 func unlock_floor(which_floor: int = floors_climbed) -> void:
@@ -111,13 +112,18 @@ func _spawn_room(room: MapRoom) -> void:
 
 func _connect_lines(room: MapRoom) -> void:
 	if room.next_rooms.is_empty():
+		var new_map_line := MAP_LINE.instantiate() as Line2D
+		new_map_line.add_point(room.position)
+		lines.add_child(new_map_line)
 		return
 		
 	for next: MapRoom in room.next_rooms:
 		var new_map_line := MAP_LINE.instantiate() as Line2D
-		print("Line room node:", room.position)
 		new_map_line.add_point(room.position)
-		new_map_line.add_point(next.position)
+		if next.row == MapGenerator.FLOORS - 1:
+			new_map_line.add_point(Vector2(floori(MapGenerator.MAP_WIDTH * 0.5) * MapGenerator.X_DIST, -(MapGenerator.FLOORS) * MapGenerator.Y_DIST))
+		else:
+			new_map_line.add_point(next.position)
 		lines.add_child(new_map_line)
 
 
@@ -128,8 +134,18 @@ func _on_map_room_clicked(room: MapRoom) -> void:
 			map_room.available = false
 
 
-func _on_map_room_selected(room: MapRoom) -> void:
+func _on_map_room_selected(room: MapRoom, seed:int) -> void:
 	print("Room selected in map emit:", room)
+	for map_room in rooms.get_children():
+		if map_room != null:
+			if map_room.row == room.row and map_room != room:
+				map_room.unselect()
 	last_room = room
 	floors_climbed += 1
+	selected_seed = seed
 	#Events.map_exited.emit(room)
+
+
+func _on_start_button_pressed() -> void:
+	GameManager.map_seed = selected_seed
+	get_tree().change_scene_to_file("res://scenes/game.tscn")

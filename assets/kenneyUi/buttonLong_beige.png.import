@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gdble6c7epmo"
-path="res://.godot/imported/tile_0182.png-837c346a0990178d9e4c91223982dac7.ctex"
+uid="uid://mofouuvjb8fl"
+path="res://.godot/imported/buttonLong_beige.png-bd548bdab100b4341be09769579558f1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tile_0182.png"
-dest_files=["res://.godot/imported/tile_0182.png-837c346a0990178d9e4c91223982dac7.ctex"]
+source_file="res://assets/kenneyUi/buttonLong_beige.png"
+dest_files=["res://.godot/imported/buttonLong_beige.png-bd548bdab100b4341be09769579558f1.ctex"]
 
 [params]
 

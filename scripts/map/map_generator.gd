@@ -1,8 +1,8 @@
 extends Node
 class_name MapGenerator
 
-const X_DIST := 60
-const Y_DIST := 50
+const X_DIST := 120
+const Y_DIST := 100
 const PLACEMENT_RANDOMNESS := 5
 const FLOORS := 6
 const MAP_WIDTH := 6
@@ -151,11 +151,6 @@ func _setup_room_types() -> void:
 				room.type = Room.Type.NORMAL
 				#Get randomly generated Plane Game Map
 				#room.battle_stats = battle_stats_pool.get_random_battle_for_tier(0)
-
-	# 9th floor is always a treasure
-	#for room: MapRoom in map_data[8]:
-	#	if room.next_rooms.size() > 0:
-	#			room.type = Room.Type.TREASURE
 	
 	# rest of rooms
 	for current_floor in map_data:

@@ -1,7 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://6bypeyngjdqj"]
+[gd_scene load_steps=9 format=3 uid="uid://6bypeyngjdqj"]
 
 [ext_resource type="Script" uid="uid://dugpuu6ilaikm" path="res://scripts/map_container.gd" id="1_lnu2h"]
+[ext_resource type="Texture2D" uid="uid://d3417nykjjs07" path="res://assets/kenneyUi/buttonSquare_beige.png" id="1_p57ef"]
+[ext_resource type="Texture2D" uid="uid://bbuci0bewgxvl" path="res://assets/kenneyUi/buttonSquare_beige_pressed.png" id="2_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://bo4sk7qj01lqq" path="res://scenes/flight_sim.tscn" id="2_yqjtg"]
+[ext_resource type="Texture2D" uid="uid://mofouuvjb8fl" path="res://assets/kenneyUi/buttonLong_beige.png" id="3_lbhrr"]
+[ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="3_u5sy4"]
+[ext_resource type="Texture2D" uid="uid://bk85ysm4mshtb" path="res://assets/kenneyUi/buttonLong_beige_pressed.png" id="4_iywne"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnu2h"]
 size = Vector2(100, 100)
@@ -40,10 +45,66 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PauseButton" type="Button" parent="CanvasLayer/VBoxContainer/TopBar"]
+[node name="PauseButton" type="TextureButton" parent="CanvasLayer/VBoxContainer/TopBar"]
 layout_mode = 2
 disabled = true
-text = "Pause"
+texture_normal = ExtResource("1_p57ef")
+texture_pressed = ExtResource("2_u5sy4")
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/TopBar/PauseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.41598046, 0.41598043, 0.4159804, 1)
+theme_override_colors/font_outline_color = Color(0.632224, 0.5108726, 0.407255, 1)
+theme_override_constants/outline_size = 7
+theme_override_fonts/font = ExtResource("3_u5sy4")
+theme_override_font_sizes/font_size = 30
+text = "||"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Restart" type="TextureButton" parent="CanvasLayer/VBoxContainer/TopBar"]
+layout_mode = 2
+texture_normal = ExtResource("3_lbhrr")
+texture_pressed = ExtResource("4_iywne")
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/TopBar/Restart"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.9224469, 0.62555504, 0.43748203, 1)
+theme_override_fonts/font = ExtResource("3_u5sy4")
+theme_override_font_sizes/font_size = 28
+text = "Restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CopySeed" type="TextureButton" parent="CanvasLayer/VBoxContainer/TopBar"]
+layout_mode = 2
+texture_normal = ExtResource("3_lbhrr")
+texture_pressed = ExtResource("4_iywne")
+
+[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer/TopBar/CopySeed"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_u5sy4")
+theme_override_font_sizes/font_size = 28
+text = "Copy"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
@@ -62,15 +123,9 @@ is_test = true
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Restart" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons"]
+[node name="Spacer" type="Control" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-text = "Restart
-"
-
-[node name="CopySeed" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons"]
-layout_mode = 2
-text = "Copy Seed
-"
 
 [node name="PlanesMenu" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -101,7 +156,7 @@ disabled = true
 text = "Pause"
 
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/TopBar/PauseButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_pause_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/MapButtons/Restart" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/TopBar/Restart" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/PlanesMenu/Plane1" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
 

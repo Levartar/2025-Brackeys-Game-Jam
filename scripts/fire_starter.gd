@@ -65,7 +65,7 @@ func _ready():
   water_rect.texture = water_tex
 
   ignite_area(Rect2i(Vector2i(TEX_SIZE.x / 2, TEX_SIZE.y / 2), Vector2i(10, 10)))
-
+  
 func ignite_area(rect: Rect2i):
   for x in range(rect.position.x, rect.position.x + rect.size.x):
     for y in range(rect.position.y, rect.position.y + rect.size.y):
