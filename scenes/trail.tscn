@@ -9,5 +9,7 @@ points = PackedVector2Array(0, 0, 0, 5)
 width = 100.0
 default_color = Color(0.22481102, 0.40539506, 0.883069, 1)
 script = ExtResource("1_rsj4o")
+max_points = 30
+trail_width = 10
 longevity = 0.3000000000029104
 fadout_duration = 0.3000000000029104

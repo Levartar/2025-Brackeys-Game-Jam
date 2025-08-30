@@ -19,6 +19,9 @@ var earth_tex: ImageTexture
 var fire_tex: ImageTexture
 var water_tex: ImageTexture
 
+var audio_player: AudioStreamPlayer2D
+@export var fire_sfx_fade_duration: float = 3.0
+
 # Burning pixel management
 var burning_pixels := {} # Dictionary: pos -> true
 var burning_pixel_keys := [] # Array of Vector2i
@@ -31,6 +34,13 @@ const alpha_col = Color(0, 0, 0, 0)
 var timer = 0
 @export var water_longevity: float = 3
 @export var water_fade_steps: float = 4
+var water_pixels = {} # Dictionary: Vector2i -> alpha_value
+var water_pixel_keys = []
+
+@export var fires_num_min: int = 2
+@export var fires_num_max: int = 7
+@export var fires_min_distance: int = 100
+@export var fires_border_margin: int = 50
 
 func _ready():
   # Create images
@@ -65,7 +75,35 @@ func _ready():
   fire_rect.texture = fire_tex
   water_rect.texture = water_tex
 
-  ignite_area(Rect2i(Vector2i(TEX_SIZE.x / 2, TEX_SIZE.y / 2), Vector2i(10, 10)))
+  # Spawn fires
+  var all_fire_pos: Array[Vector2i] = []
+  var max_tries: int = 1000
+  for i in randi_range(fires_num_min, fires_num_max):
+    var new_pos = null
+    var too_close_to_others: bool = false
+    var num_tries: int = 0
+    var aborted: bool = false
+    while new_pos == null or is_position_in_waters(new_pos) or too_close_to_others:
+      var new_pos_x: int = randi_range(fires_border_margin, TEX_SIZE.x - fires_border_margin)
+      var new_pos_y: int = randi_range(fires_border_margin, TEX_SIZE.y - fires_border_margin)
+      new_pos = Vector2i(new_pos_x, new_pos_y)
+      for j in range(all_fire_pos.size()):
+        if new_pos.distance_to(all_fire_pos[j]) < fires_min_distance:
+          too_close_to_others = true
+      num_tries += 1
+      if num_tries >= max_tries:
+        # print("Didn't find suitable spot to start fire within " + str(num_tries) + " tries.") # test
+        aborted = true
+        max_tries *= 2 # increase number to reduce chance of another fire not spawning
+        break
+    if not aborted:
+      ignite_area(Rect2i(new_pos, Vector2i(10, 10)))
+      all_fire_pos.append(new_pos)
+      # print("Started fire at ", new_pos) # test
+
+  # Play fire SFX
+  audio_player = $AudioStreamPlayer2D
+  audio_player.play()
 
   #get progress bar
   call_deferred("_get_progress_bar")
@@ -97,6 +135,10 @@ func throw_water_circle(center: Vector2i, radius: int):
         var dy = y - center.y
         var distance_squared = dx * dx + dy * dy
         if distance_squared <= radius_squared:
+          var pos = Vector2i(x, y)
+          if not water_pixels.has(pos):
+            water_pixel_keys.append(pos)
+          water_pixels[pos] = 1.0
           water_img.set_pixel(x, y, Color(0, 0, 1, 1)) # wet
   _update_water_texture()
 
@@ -126,11 +168,14 @@ func _process(_delta):
   timer += _delta
   if timer >= water_longevity / water_fade_steps:
     timer -= water_longevity / water_fade_steps
-    fade_water_alpha(1 / water_fade_steps)
+    fade_water(1 / water_fade_steps)
     _update_water_texture()
 
   var total = burning_pixel_keys.size()
   if total == 0:
+    var tween := create_tween()
+    tween.tween_property(audio_player, "volume_db", -80.0, fire_sfx_fade_duration)
+    tween.tween_callback(Callable(audio_player, "stop"))
     return
   var chunk_size = int(ceil(total / float(CHUNK_DIVISOR)))
   var start = chunk_index * chunk_size
@@ -167,7 +212,7 @@ func _process(_delta):
   
   #update progress bar
   if progressBar != null:
-    progressBar.update_progress(to_remove.size()*500 / float(TEX_SIZE.x * TEX_SIZE.y))#
+    progressBar.update_progress(to_remove.size()*200 / float(TEX_SIZE.x * TEX_SIZE.y))#
   # Remove extinguished or burned out pixels from both dict and key array
   for pos in to_remove:
     _extinguish_pixel(pos)
@@ -175,15 +220,20 @@ func _process(_delta):
   _update_fire_texture()
   _update_earth_texture()
 
-func fade_water_alpha(fade_rate: float):
-  for x in range(TEX_SIZE.x):
-    for y in range(TEX_SIZE.y):
-      var pixel = water_img.get_pixel(x, y)
-      if pixel.a > 0.01: # Only process visible water pixels
-        pixel.a -= fade_rate
-        if pixel.a < 0.01: # Set to fully transparent when nearly invisible
-          pixel = Color(0, 0, 0, 0)
-        water_img.set_pixel(x, y, pixel)
+func fade_water(fade_rate: float):
+  var to_remove = []
+  for pos in water_pixel_keys:
+    var current_alpha = water_pixels[pos] - fade_rate
+    if current_alpha < 0.01:
+      water_img.set_pixel(pos.x, pos.y, Color(0, 0, 1, 0))
+      to_remove.append(pos)
+    else:
+      water_pixels[pos] = current_alpha
+      water_img.set_pixel(pos.x, pos.y, Color(0, 0, 1, current_alpha))
+
+  for pos in to_remove:
+    water_pixels.erase(pos)
+    water_pixel_keys.erase(pos)
 
 func _extinguish_pixel(pos: Vector2i):
   burning_pixels.erase(pos)
@@ -207,6 +257,15 @@ func is_position_on_fire(world_pos: Vector2) -> bool:
   var tex_pos = world_to_texture_coords(world_pos)
   if tex_pos.x >= 0 and tex_pos.x < TEX_SIZE.x and tex_pos.y >= 0 and tex_pos.y < TEX_SIZE.y:
     return burning_pixels.has(tex_pos)
+  return false
+
+# Check if a world position is in original water (from map generation)
+func is_position_in_waters(world_pos: Vector2) -> bool:
+  var tex_pos = world_to_texture_coords(world_pos)
+  if tex_pos.x >= 0 and tex_pos.x < TEX_SIZE.x and tex_pos.y >= 0 and tex_pos.y < TEX_SIZE.y:
+    var earth_color = earth_img.get_pixel(tex_pos.x, tex_pos.y)
+    # Check if it's water/river color (blue component >= 0.6 based on your fire logic)
+    return earth_color.b >= 0.6
   return false
 
 # Drop water at world position

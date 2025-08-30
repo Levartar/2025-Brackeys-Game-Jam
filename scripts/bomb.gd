@@ -18,10 +18,13 @@ func _process(_delta):
   pass
 
 func deploy() -> void:
+  if not plane.is_water_in_tank(): deactivate()
+  else:
     if plane == null: print("Bomb could not find Plane instance!"); return
     var pos = plane.position
     if terrain:
       terrain.drop_water_at_position(pos, distinguish_radius)
+      plane.deplete_tank()
       deactivate()
       plane.activate_cooldown()
 

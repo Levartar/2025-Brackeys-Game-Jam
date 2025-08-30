@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bf2286e5xurbi"]
+
+[node name="WaterTank" type="ProgressBar"]
+modulate = Color(0.091039605, 0.43439656, 0.9338191, 1)
+offset_right = 4.0
+offset_bottom = 27.0
+value = 100.0
+show_percentage = false
