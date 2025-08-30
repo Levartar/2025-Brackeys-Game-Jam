@@ -15,6 +15,5 @@ func _get_terrain():
 		print("Flight Sim node not found!")
 
 func update_progress(val: float) -> void:
-	self.value += val * 200
-	print("Progress updated with: ", val)
+	self.value += val
 

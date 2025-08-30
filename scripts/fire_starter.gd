@@ -167,8 +167,7 @@ func _process(_delta):
   
   #update progress bar
   if progressBar != null:
-    print(to_remove.size())
-    progressBar.update_progress(to_remove.size() / float(TEX_SIZE.x * TEX_SIZE.y))#
+    progressBar.update_progress(to_remove.size()*500 / float(TEX_SIZE.x * TEX_SIZE.y))#
   # Remove extinguished or burned out pixels from both dict and key array
   for pos in to_remove:
     _extinguish_pixel(pos)
