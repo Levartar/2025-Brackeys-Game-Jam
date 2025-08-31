@@ -25,7 +25,7 @@ func _ready() -> void:
   set_range_mod()
   points = [anchor, anchor + Vector2(laser_range * range_mod, 0)]
   audio_player = $AudioStreamPlayer2D
-  audio_player.play()
+  # audio_player.play()
 
 func _process(delta):
   if not plane.is_water_in_tank(): deactivate()
