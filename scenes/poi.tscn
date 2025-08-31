@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://lutbaot026ma"]
+[gd_scene load_steps=7 format=3 uid="uid://lutbaot026ma"]
 
 [ext_resource type="Script" uid="uid://by006xmxw48nh" path="res://scripts/poi.gd" id="1_6r3jc"]
 [ext_resource type="Texture2D" uid="uid://y7vbwctwuu0j" path="res://assets/poi.png" id="2_fhs6e"]
 [ext_resource type="Texture2D" uid="uid://cpdlvwj3y6sjh" path="res://assets/ui/countdown_progress.png" id="3_fhs6e"]
 [ext_resource type="Texture2D" uid="uid://cu3amyo600nfi" path="res://assets/ui/countdown_under.png" id="4_ojyob"]
+[ext_resource type="Texture2D" uid="uid://dlie17smlisi5" path="res://assets/kenneyUi/input-e.png" id="5_ojyob"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5bacp"]
 
@@ -33,6 +34,12 @@ scale = Vector2(0.14000043, 0.14000043)
 fill_mode = 4
 texture_under = ExtResource("4_ojyob")
 texture_progress = ExtResource("3_fhs6e")
+
+[node name="InputHint" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1.9073486e-06, 17.999983)
+scale = Vector2(0.18750025, 0.18750025)
+texture = ExtResource("5_ojyob")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_body_exited"]

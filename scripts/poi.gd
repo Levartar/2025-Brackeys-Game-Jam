@@ -8,7 +8,8 @@ enum PoiState {Initial, Preparing, Ready, Rescued, Burnt}
 var state: PoiState = PoiState.Initial
 var secs_since_prep: float = 0.0
 var prep_countdown: TextureProgressBar
-var hut_sprite: Sprite2D # TODO: replace
+var hut_sprite: Sprite2D
+var input_hint: Sprite2D
 
 var flight_sim: Node2D
 var terrain: Control
@@ -19,6 +20,7 @@ func _ready() -> void:
   terrain = flight_sim.get_node("Terrain")
   plane = flight_sim.get_node("Plane")
   hut_sprite = $Sprite2D
+  input_hint = $InputHint
   prep_countdown = $TextureProgressBar
   prep_countdown.max_value = prep_time
   prep_countdown.value = prep_time
@@ -41,6 +43,7 @@ func _process(delta: float) -> void:
 
 func activate() -> void:
   if not flight_sim.get_is_any_poi_waiting() and not plane.has_passengers:
+    input_hint.visible = false
     state = PoiState.Preparing
     # print("State:", state) # test
     prep_countdown.visible = true
@@ -49,6 +52,7 @@ func activate() -> void:
     print("Rescue the others waiting first!")
 
 func rescue() -> void:
+  input_hint.visible = false
   state = PoiState.Rescued
   # print("State:", state) # test
   plane.add_passengers()
@@ -58,12 +62,15 @@ func rescue() -> void:
 
 func _on_body_entered(body: Node2D) -> void:
   if body.name == "Plane":
-    if state == PoiState.Initial:
+    if state == PoiState.Initial and not flight_sim.get_is_any_poi_waiting() and not plane.has_passengers:
+      input_hint.visible = true
       body.set_poi_interaction(activate)
-    elif state == PoiState.Ready:
+    elif state == PoiState.Ready and not plane.has_passengers:
+      input_hint.visible = true
       body.set_poi_interaction(rescue)
     body.set_is_over_poi(true)
     
 func _on_body_exited(body: Node2D) -> void:
   if body.name == "Plane":
+    input_hint.visible = false
     body.set_is_over_poi(false)
