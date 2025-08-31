@@ -5,6 +5,8 @@ enum PlaneType {Standard, Bomber, Laser}
 @export var type: PlaneType = PlaneType.Standard
 @export var speed: int = 400
 @export var rotation_speed: float = 1.5
+@export var speed_values = {"Standard": 120, "Bomber": 70, "Laser": 100}
+@export var rotation_values = {"Standard": 2.0, "Bomber": 1.2, "Laser": 1.5}
 @export var cooldown_values = {"Standard": 1.5, "Bomber": 1.5, "Laser": 0.0}
 @export var depletion_values = {"Standard": 80.0, "Bomber": 33.34, "Laser": 10.0}
 @export var is_test: bool = false # TODO: make sure is set to false in godot before release
@@ -126,14 +128,20 @@ func activate_cooldown() -> void:
 func set_type(new_type: PlaneType) -> void:
   type = new_type
   if new_type == PlaneType.Standard:
+    speed = speed_values["Standard"]
+    rotation_speed = rotation_values["Standard"]
     cooldown = cooldown_values["Standard"]
     sprite.texture = texture_standard
     audio_player.stream = sfx_standard
   elif new_type == PlaneType.Bomber:
+    speed = speed_values["Bomber"]
+    rotation_speed = rotation_values["Bomber"]
     cooldown = cooldown_values["Bomber"]
     sprite.texture = texture_bomber
     audio_player.stream = sfx_bomber
   elif new_type == PlaneType.Laser:
+    speed = speed_values["Laser"]
+    rotation_speed = rotation_values["Laser"]
     cooldown = cooldown_values["Laser"]
     sprite.texture = texture_laser
     audio_player.stream = sfx_laser
