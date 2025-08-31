@@ -219,6 +219,8 @@ func _process(_delta):
   chunk_index = (chunk_index + 1) % CHUNK_DIVISOR
   _update_fire_texture()
   _update_earth_texture()
+  _finish_level()
+  _loose_level()
 
 func fade_water(fade_rate: float):
   var to_remove = []
@@ -289,3 +291,13 @@ func _on_copy_seed_pressed() -> void:
 func _get_progress_bar():
   progressBar = get_tree().get_root().get_node("Game/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu/FireProgress/TextureProgressBar")
   print("Progress bar node:", progressBar)
+
+func _finish_level():
+  if burning_pixels.size() == 0:
+    print("Level finished!")
+    get_tree().change_scene_to_file("res://scenes/map/map.tscn")
+
+func _loose_level():
+  if progressBar.value == 100:
+    print("You lost the level!")
+    get_tree().change_scene_to_file("res://scenes/map/map.tscn")

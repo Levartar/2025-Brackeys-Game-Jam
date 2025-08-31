@@ -42,3 +42,7 @@ func _on_pause_button_pressed() -> void:
 
 func _on_bottom_button_pressed() -> void:
 	get_tree().paused = false
+
+
+func _on_win_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/map/map.tscn")

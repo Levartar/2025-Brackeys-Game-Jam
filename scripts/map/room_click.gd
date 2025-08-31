@@ -18,6 +18,11 @@ var room: Room : set = set_room
 var room_seed: int = 0
 var type: Room.Type = Room.Type.NOT_ASSIGNED
 
+func _ready() -> void:
+  room_seed = texture_rect.get_seed()
+  #if room_seed != 0:
+  #  texture_rect.generate_map(room_seed)
+
 func set_available(new_val: bool) -> void:
   available = new_val
   if available:
@@ -28,10 +33,10 @@ func set_available(new_val: bool) -> void:
 func set_room(new_room: Room) -> void:
   room = new_room
   position = room.position
-  if "room_seed" in room:
-    room_seed = room.room_seed
-  else:
-    room_seed = 0
+
+func update_texture_rect() -> void:
+    texture_rect.generate_map(room_seed)
+    print("Updated texture rect with seed: %d" % room_seed)
 
 func show_picked() -> void:
   line_2d.modulate = Color.BURLYWOOD

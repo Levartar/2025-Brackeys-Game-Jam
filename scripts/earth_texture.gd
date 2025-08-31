@@ -38,13 +38,18 @@ const MATERIALS = {
 
 func _ready():
   TEX_SIZE = Vector2i(get_rect().size.x, get_rect().size.y)
-  seed = GameManager.map_seed
+
   if seed != 0:
     generate_map(seed)
+    print("Using existing seed: %d" % seed)
+  elif GameManager.map_seed != 0:
+    seed = GameManager.map_seed
+    generate_map(seed)
+    print("Using GameManager seed: %d" % seed)
   else:
     generate_map()
-  update_texture()
-  print("Generated map with seed: %d" % seed)
+    print("No existing seed, generated new seed")
+  #print("Generated map with seed: %d" % seed)
 
 func generate_map(optional_seed: int = randi()):
   if optional_seed == -1:
@@ -75,6 +80,7 @@ func generate_map(optional_seed: int = randi()):
       else:
         color = MATERIALS["mountain"]["color"]
       earth_img.set_pixel(x, y, color)
+  update_texture()
 
 func update_texture():
   earth_tex = ImageTexture.create_from_image(earth_img)

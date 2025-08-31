@@ -9,7 +9,7 @@ const MAP_LINE = preload("res://scenes/map/map_line.tscn")
 @onready var lines: Node2D = %Lines
 @onready var rooms: Node2D = %Rooms
 @onready var visuals: Node2D = $Visuals
-@onready var camera_2d: Camera2D = $Camera2D
+#@onready var camera_2d: Camera2D = $Camera2D
 
 var map_data: Array[Array]
 var floors_climbed: int
@@ -21,21 +21,13 @@ var selected_seed: int = 0
 func _ready() -> void:
 	camera_edge_y = MapGenerator.Y_DIST * (MapGenerator.FLOORS - 1)
 
-	generate_new_map()
-	unlock_floor(0)
-
-# scrolling system
-#func _unhandled_input(event: InputEvent) -> void:
-#	if not visible:
-#		return
-#	
-#	if event.is_action_pressed("scroll_up"):
-#		camera_2d.position.y -= SCROLL_SPEED
-#		print("Camera Y:", camera_2d.position.y)
-#	elif event.is_action_pressed("scroll_down"):
-#		camera_2d.position.y += SCROLL_SPEED
-#
-#	camera_2d.position.y = clamp(camera_2d.position.y, -camera_edge_y, 0)
+	print("Game Manager last room", GameManager.floors_climbed)
+	if GameManager.floors_climbed > 0:
+		load_map(GameManager.current_map, GameManager.floors_climbed)
+	else:
+		print("No saved map state, generating new map")
+		generate_new_map()
+		unlock_floor(0)
 
 
 func generate_new_map() -> void:
@@ -44,16 +36,16 @@ func generate_new_map() -> void:
 	create_map()
 
 
-func load_map(map: Array[Array], floors_completed: int, last_room_climbed: MapRoom) -> void:
+func load_map(map: Array[Array], floors_completed: int) -> void:
 	floors_climbed = floors_completed
 	map_data = map
-	last_room = last_room_climbed
+	last_room = map_data[floors_climbed][randi() % map_data[floors_climbed].size()]
 	create_map()
 	
-	#if floors_climbed > 0:
-	#	unlock_next_rooms()
-	#else:
-	#	unlock_floor()
+	if floors_climbed > 0:
+		unlock_next_rooms()
+	else:
+		unlock_floor()
 
 
 func create_map() -> void:
@@ -77,24 +69,15 @@ func unlock_floor(which_floor: int = floors_climbed) -> void:
 		if map_room.row == which_floor:
 			map_room.set_available(true)
 
-#
-#func unlock_next_rooms() -> void:
-#	for map_room: MapRoom in rooms.get_children():
-#		if last_room.next_rooms.has(map_room.room):
-#			map_room.available = true
 
-
-func show_map() -> void:
-	show()
-	camera_2d.enabled = true
-
-
-func hide_map() -> void:
-	hide()
-	camera_2d.enabled = false
+func unlock_next_rooms() -> void:
+	for map_room: MapRoom in rooms.get_children():
+		if last_room.next_rooms.has(map_room.room):
+			map_room.available = true
 
 
 func _spawn_room(room: MapRoom) -> void:
+	GameManager.map_seed = room.room_seed
 	var new_map_room := MAP_ROOM.instantiate() as MapRoom
 	rooms.add_child(new_map_room)
 	print("Spawned room node:", new_map_room.position)
@@ -102,6 +85,8 @@ func _spawn_room(room: MapRoom) -> void:
 	new_map_room.row = room.row
 	new_map_room.column = room.column
 	new_map_room.next_rooms = room.next_rooms
+	#new_map_room.room_seed = room.room_seed
+	#new_map_room.update_texture_rect()
 	new_map_room.clicked.connect(_on_map_room_clicked)
 	new_map_room.selected.connect(_on_map_room_selected)
 	_connect_lines(room)
@@ -148,4 +133,11 @@ func _on_map_room_selected(room: MapRoom, seed:int) -> void:
 
 func _on_start_button_pressed() -> void:
 	GameManager.map_seed = selected_seed
+	_save_map_state()
+	print("saved map state ",GameManager.floors_climbed)
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
+
+func _save_map_state() -> void:
+	GameManager.current_map= map_data
+	GameManager.floors_climbed = floors_climbed
+	#GameManager.last_room = last_room

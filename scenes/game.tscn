@@ -5,8 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://d3417nykjjs07" path="res://assets/kenneyUi/buttonSquare_beige.png" id="1_p57ef"]
 [ext_resource type="Texture2D" uid="uid://bbuci0bewgxvl" path="res://assets/kenneyUi/buttonSquare_beige_pressed.png" id="2_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://bo4sk7qj01lqq" path="res://scenes/flight_sim.tscn" id="2_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://bf2286e5xurbi" path="res://scenes/water_tank.tscn" id="3_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://mofouuvjb8fl" path="res://assets/kenneyUi/buttonLong_beige.png" id="3_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://bf2286e5xurbi" path="res://scenes/water_tank.tscn" id="3_lnu2h"]
 [ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="3_u5sy4"]
 [ext_resource type="Texture2D" uid="uid://bk85ysm4mshtb" path="res://assets/kenneyUi/buttonLong_beige_pressed.png" id="4_iywne"]
 [ext_resource type="Texture2D" uid="uid://c23smr70n1u3c" path="res://assets/kenneyUi/panel_beigeLight.png" id="8_gee14"]
@@ -16,9 +16,6 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vtaks"]
 shader = ExtResource("1_0tnpc")
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnu2h"]
-size = Vector2(100, 100)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kvuet"]
 shader = ExtResource("1_0tnpc")
@@ -134,6 +131,25 @@ text = "Copy Seed"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Win" type="TextureButton" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar"]
+layout_mode = 2
+texture_normal = ExtResource("3_lbhrr")
+texture_pressed = ExtResource("4_iywne")
+
+[node name="Label2" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer/TopBar/Win"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_u5sy4")
+theme_override_font_sizes/font_size = 28
+text = "Win"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -146,13 +162,7 @@ script = ExtResource("1_lnu2h")
 [node name="Flight Sim" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" instance=ExtResource("2_yqjtg")]
 unique_name_in_owner = true
 
-
-[node name="Plane" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
-depletion_values = {
-"Bomber": 33.33999999999651,
-"Laser": 10.0,
-"Standard": 80.0
-}
+[node name="Plane" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
 is_test = true
 
 [node name="Terrain" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
@@ -160,14 +170,11 @@ water_longevity = 1.0
 water_fade_steps = 100.0
 
 [node name="WaterTank" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" instance=ExtResource("3_lnu2h")]
+modulate = Color(0.28277934, 0.78878945, 5.9516597, 1)
 offset_left = -1.0
 offset_top = 732.0
 offset_right = 801.0
 offset_bottom = 799.0
-
-[node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
-[node name="Plane" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
-is_test = true
 
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -202,11 +209,13 @@ script = ExtResource("12_dinhu")
 layout_mode = 2
 size_flags_vertical = 3
 
-[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
-[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Plane"]
-[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Terrain"]
+[node name="CanvasLayer_VBoxContainer_HBoxContainer#MapButtons" type="VBoxContainer" parent="."]
+layout_mode = 0
 
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/PauseButton" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_pause_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/Restart" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu/Plane1" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/Win" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_win_pressed"]
+
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Plane"]
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Terrain"]

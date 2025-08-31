@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://chs8rmh3ha888"]
+[gd_scene load_steps=13 format=3 uid="uid://chs8rmh3ha888"]
 
 [ext_resource type="Script" uid="uid://om3qweywijpa" path="res://scripts/map/map.gd" id="1_a2pkv"]
 [ext_resource type="PackedScene" uid="uid://bqs5oskcd6drx" path="res://scenes/map/map_generator.tscn" id="1_sxf4j"]
@@ -7,15 +7,16 @@
 [ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="4_04w0f"]
 [ext_resource type="Texture2D" uid="uid://pw54yf7yti7" path="res://assets/kenneyUi/buttonLong_brown_pressed.png" id="4_jcaow"]
 [ext_resource type="Texture2D" uid="uid://c23smr70n1u3c" path="res://assets/kenneyUi/panel_beigeLight.png" id="7_04w0f"]
+[ext_resource type="Texture2D" uid="uid://bxosrah8i63v0" path="res://assets/kenneyUi/buttonSquare_brown_pressed.png" id="8_sqgf4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a2pkv"]
 shader = ExtResource("2_tqkkf")
 
-[sub_resource type="Gradient" id="Gradient_ph54e"]
+[sub_resource type="Gradient" id="Gradient_vvrx0"]
 colors = PackedColorArray(0.26166332, 0, 0.082820915, 1, 0.58996195, 0.33318633, 0.82214206, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_fcby6"]
-gradient = SubResource("Gradient_ph54e")
+gradient = SubResource("Gradient_vvrx0")
 fill_from = Vector2(0.817757, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sqgf4"]
@@ -118,5 +119,22 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 texture = ExtResource("7_04w0f")
+
+[node name="PanelBeigeLight2" type="TextureRect" parent="Background/PanelBeigeLight"]
+material = SubResource("ShaderMaterial_sqgf4")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -372.0
+offset_top = -384.0
+offset_right = 372.0
+offset_bottom = 383.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+texture = ExtResource("8_sqgf4")
 
 [connection signal="pressed" from="MarginContainer/Control/StartButton" to="." method="_on_start_button_pressed"]

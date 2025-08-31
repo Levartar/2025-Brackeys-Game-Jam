@@ -1,0 +1,132 @@
+[gd_scene load_steps=9 format=3 uid="uid://b47mrh0rnr2bi"]
+
+[ext_resource type="Script" uid="uid://gqjj00o4keyi" path="res://scenes/main_menu.gd" id="1_8ln24"]
+[ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="1_wu84c"]
+[ext_resource type="Texture2D" uid="uid://mofouuvjb8fl" path="res://assets/kenneyUi/buttonLong_beige.png" id="2_8ln24"]
+[ext_resource type="Texture2D" uid="uid://bk85ysm4mshtb" path="res://assets/kenneyUi/buttonLong_beige_pressed.png" id="3_rtw2f"]
+[ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="4_oa1go"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tbmy8"]
+shader = ExtResource("1_wu84c")
+
+[sub_resource type="Gradient" id="Gradient_ph54e"]
+colors = PackedColorArray(0.26166332, 0, 0.082820915, 1, 0.58996195, 0.33318633, 0.82214206, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jk1qb"]
+gradient = SubResource("Gradient_ph54e")
+fill_from = Vector2(0.817757, 1)
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8ln24")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="CanvasLayer" parent="Control"]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="Control/Background"]
+material = SubResource("ShaderMaterial_tbmy8")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_jk1qb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -95.0
+offset_top = -77.5
+offset_right = 95.0
+offset_bottom = 77.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureButton" type="TextureButton" parent="Control/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("2_8ln24")
+texture_pressed = ExtResource("3_rtw2f")
+
+[node name="Label" type="Label" parent="Control/VBoxContainer/TextureButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.77652985, 0.49362713, 0.35008246, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_oa1go")
+theme_override_font_sizes/font_size = 28
+text = "Start Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton2" type="TextureButton" parent="Control/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_8ln24")
+texture_pressed = ExtResource("3_rtw2f")
+
+[node name="Label" type="Label" parent="Control/VBoxContainer/TextureButton2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.77652985, 0.49362713, 0.35008246, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_oa1go")
+theme_override_font_sizes/font_size = 28
+text = "Controls"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton3" type="TextureButton" parent="Control/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_8ln24")
+texture_pressed = ExtResource("3_rtw2f")
+
+[node name="Label" type="Label" parent="Control/VBoxContainer/TextureButton3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.77652985, 0.49362713, 0.35008246, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_oa1go")
+theme_override_font_sizes/font_size = 28
+text = "Credits"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Control/VBoxContainer/TextureButton" to="." method="_on_start_button_pressed"]
