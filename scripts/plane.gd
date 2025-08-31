@@ -41,6 +41,8 @@ var has_passengers: bool = false
 var water_tank: ProgressBar
 var water_tank_level: float
 
+var input_hint: Sprite2D
+
 # testing vars
 var initial_position: Vector2
 var speed_mod: float = 1
@@ -49,6 +51,8 @@ func _ready() -> void:
   sprite = $Sprite2D
   audio_player = $AudioStreamPlayer2D
   water_tank = get_parent().get_node("WaterTank")
+  input_hint = $CanvasLayer/InputHint
+  input_hint.visible = true
   initial_position = position
 
 func _process(delta: float) -> void:
@@ -61,6 +65,7 @@ func _process(delta: float) -> void:
       deployed_after_cooldown = false
   else:
     if Input.is_action_just_pressed("deploy") and is_water_in_tank():
+      if input_hint.visible: input_hint.visible = false
       if type == PlaneType.Standard:
         latest_trail = trail_scene.instantiate()
         get_parent().add_child(latest_trail)
@@ -93,6 +98,7 @@ func _physics_process(delta):
   velocity = transform.y * -1 * speed * speed_mod
   rotation += rotation_direction * rotation_speed * delta
   move_and_slide()
+  input_hint.global_position = global_position + Vector2(0, -50)
   # testing controls
   if is_test:
     if Input.is_action_just_pressed("reset_plane"):
