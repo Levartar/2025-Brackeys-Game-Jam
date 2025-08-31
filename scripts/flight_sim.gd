@@ -4,6 +4,7 @@ extends Node2D
 @export var poi_border_margin: int = 75
 @export var poi_min_distance: int = 150
 @export var poi_fire_distance: int = 75
+@export var instruction: Control
 
 var is_any_poi_waiting: bool = false
 var poi_scene: PackedScene = preload("res://scenes/poi.tscn")
@@ -18,9 +19,18 @@ var fire_spawn_pos: Vector2 = Vector2.ZERO # TODO: adjust fire spawns later on
 var airport_pos: Vector2
 var airport_rot: float
 
+var chara_tex_lumber: CompressedTexture2D = preload("res://assets/lumber.png")
+var chara_tex_mechanic: CompressedTexture2D = preload("res://assets/mechanic.png")
+var chara_sprite: TextureRect
+var speech_bubble: Label
+var next_chara_is_lumber: bool
+
 func _ready() -> void:
   plane = $Plane
   terrain = $Terrain
+  chara_sprite = instruction.get_node("CharaSprite")
+  speech_bubble = instruction.get_node("SpeechBubble/Label")
+  next_chara_is_lumber = true
   terrain_dim = terrain.TEX_SIZE
   for i in range(poi_num + 1):
     var new_pos = Vector2.ZERO
@@ -100,6 +110,10 @@ func swap_plane() -> void:
   plane.set_type(plane.get_rand_type())
   plane.remove_passengers()
   is_any_poi_waiting = false
+  speech_bubble.text = "Save me from my home!"
+  if next_chara_is_lumber: chara_sprite.texture = chara_tex_lumber
+  if !next_chara_is_lumber: chara_sprite.texture = chara_tex_mechanic
+  next_chara_is_lumber = !next_chara_is_lumber
 
 func get_is_any_poi_waiting() -> bool:
   return is_any_poi_waiting

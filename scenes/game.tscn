@@ -1,24 +1,22 @@
-[gd_scene load_steps=16 format=3 uid="uid://6bypeyngjdqj"]
+[gd_scene load_steps=17 format=3 uid="uid://6bypeyngjdqj"]
 
 [ext_resource type="Shader" uid="uid://uhj5pyrc014p" path="res://shaders/smooth_pixel.gdshader" id="1_0tnpc"]
 [ext_resource type="Script" uid="uid://dugpuu6ilaikm" path="res://scripts/map_container.gd" id="1_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://d3417nykjjs07" path="res://assets/kenneyUi/buttonSquare_beige.png" id="1_p57ef"]
 [ext_resource type="Texture2D" uid="uid://bbuci0bewgxvl" path="res://assets/kenneyUi/buttonSquare_beige_pressed.png" id="2_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://bo4sk7qj01lqq" path="res://scenes/flight_sim.tscn" id="2_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://bf2286e5xurbi" path="res://scenes/water_tank.tscn" id="3_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://mofouuvjb8fl" path="res://assets/kenneyUi/buttonLong_beige.png" id="3_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://bf2286e5xurbi" path="res://scenes/water_tank.tscn" id="3_lnu2h"]
 [ext_resource type="FontFile" uid="uid://ctg7juh837ysf" path="res://assets/fonts/RangerEastwood-G33Gm.ttf" id="3_u5sy4"]
 [ext_resource type="Texture2D" uid="uid://bk85ysm4mshtb" path="res://assets/kenneyUi/buttonLong_beige_pressed.png" id="4_iywne"]
 [ext_resource type="Texture2D" uid="uid://c23smr70n1u3c" path="res://assets/kenneyUi/panel_beigeLight.png" id="8_gee14"]
 [ext_resource type="Texture2D" uid="uid://4fy8iatldp3y" path="res://assets/kenneyUi/barBack_verticalMid.png" id="10_kvpfn"]
 [ext_resource type="Texture2D" uid="uid://lp7i8dt0vl6m" path="res://assets/kenneyUi/barRed_verticalMid.png" id="11_dinhu"]
-[ext_resource type="Script" uid="uid://cfdk78sv8emxe" path="res://scenes/texture_progress_bar.gd" id="12_dinhu"]
+[ext_resource type="Script" uid="uid://cfdk78sv8emxe" path="res://scripts/texture_progress_bar.gd" id="12_dinhu"]
+[ext_resource type="Texture2D" uid="uid://br6v2wjywfb8a" path="res://assets/lumber.png" id="14_trtic"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vtaks"]
 shader = ExtResource("1_0tnpc")
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnu2h"]
-size = Vector2(100, 100)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kvuet"]
 shader = ExtResource("1_0tnpc")
@@ -143,16 +141,11 @@ layout_mode = 2
 size_flags_horizontal = 0
 script = ExtResource("1_lnu2h")
 
-[node name="Flight Sim" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" instance=ExtResource("2_yqjtg")]
+[node name="Flight Sim" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" node_paths=PackedStringArray("instruction") instance=ExtResource("2_yqjtg")]
 unique_name_in_owner = true
+instruction = NodePath("../../Instruction")
 
-
-[node name="Plane" parent="CanvasLayer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
-depletion_values = {
-"Bomber": 33.33999999999651,
-"Laser": 10.0,
-"Standard": 80.0
-}
+[node name="Plane" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
 is_test = true
 
 [node name="Terrain" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
@@ -164,10 +157,6 @@ offset_left = -1.0
 offset_top = 732.0
 offset_right = 801.0
 offset_bottom = 799.0
-
-[node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
-[node name="Plane" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
-is_test = true
 
 [node name="MapButtons" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -198,15 +187,59 @@ texture_progress = ExtResource("11_dinhu")
 tint_progress = Color(0.64705884, 0, 0.2784314, 0.6862745)
 script = ExtResource("12_dinhu")
 
+[node name="Instruction" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="CharaSprite" type="TextureRect" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Instruction"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 22.0
+offset_right = 645.0
+offset_bottom = 286.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.8400024, 0.8400024)
+texture = ExtResource("14_trtic")
+
+[node name="SpeechBubble" type="TextureRect" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Instruction"]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 56.0
+offset_right = 708.0
+offset_bottom = 198.0
+texture = ExtResource("1_p57ef")
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Instruction/SpeechBubble"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_right = -27.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.41598046, 0.41598043, 0.4159804, 1)
+theme_override_colors/font_outline_color = Color(0.632224, 0.5108726, 0.407255, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_u5sy4")
+theme_override_font_sizes/font_size = 30
+text = "Save me from my home!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="BottomBar" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
-[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Plane"]
-[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Terrain"]
+[node name="CanvasLayer_VBoxContainer_HBoxContainer#MapButtons" type="VBoxContainer" parent="."]
+layout_mode = 0
 
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/PauseButton" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_pause_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/TopBar/Restart" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/PlanesMenu/Plane1" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_restart_pressed"]
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/BottomBar/BottomButton" to="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer" method="_on_bottom_button_pressed"]
+
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim"]
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Plane"]
+[editable path="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim/Terrain"]

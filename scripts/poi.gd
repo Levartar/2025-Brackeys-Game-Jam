@@ -30,10 +30,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
   if state != PoiState.Rescued and state != PoiState.Burnt:
     if state == PoiState.Preparing:
+      flight_sim.speech_bubble.text = "I'll grab my stuff!"
       secs_since_prep += delta
       prep_countdown.value = prep_time - secs_since_prep
       if secs_since_prep >= prep_time:
         state = PoiState.Ready
+        flight_sim.speech_bubble.text = "Get me outta here!"
         # print("State:", state) # test
     if terrain.is_position_on_fire(global_position): # TODO: check why it's unreliable
       state = PoiState.Burnt
@@ -55,6 +57,7 @@ func rescue() -> void:
   input_hint.visible = false
   state = PoiState.Rescued
   # print("State:", state) # test
+  flight_sim.speech_bubble.text = "Bring me to the airport!"
   plane.add_passengers()
   flight_sim.set_is_any_poi_waiting(false)
   prep_countdown.visible = false
