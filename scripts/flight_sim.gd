@@ -25,12 +25,16 @@ var chara_sprite: TextureRect
 var speech_bubble: Label
 var next_chara_is_lumber: bool
 
+var rescue_count: int
+
 func _ready() -> void:
   plane = $Plane
   terrain = $Terrain
   chara_sprite = instruction.get_node("CharaSprite")
   speech_bubble = instruction.get_node("SpeechBubble/Label")
+  speech_bubble.text = "Save me from my home!"
   next_chara_is_lumber = true
+  rescue_count = -1
   terrain_dim = terrain.TEX_SIZE
   for i in range(poi_num + 1):
     var new_pos = Vector2.ZERO
@@ -65,7 +69,8 @@ func _ready() -> void:
   swap_plane()
 
 func _process(_delta: float) -> void:
-  pass
+  if GameManager.is_lost:
+    speech_bubble.text = "You've messed up :("
 
 func _is_close_to_waters(pos: Vector2, min_distance: float) -> bool:
   if terrain.is_position_in_waters(pos): return true
@@ -105,15 +110,20 @@ func _get_boundary_aware_rotation(threshold: float) -> Dictionary:
   return {"min": min_rot, "max": max_rot}
 
 func swap_plane() -> void:
-  plane.set_pos(airport_pos)
-  plane.set_rot(airport_rot)
-  plane.set_type(plane.get_rand_type())
-  plane.remove_passengers()
-  is_any_poi_waiting = false
-  speech_bubble.text = "Save me from my home!"
-  if next_chara_is_lumber: chara_sprite.texture = chara_tex_lumber
-  if !next_chara_is_lumber: chara_sprite.texture = chara_tex_mechanic
-  next_chara_is_lumber = !next_chara_is_lumber
+  rescue_count += 1
+  if rescue_count >= 3:
+    speech_bubble.text = "You've saved everyone <3"
+    GameManager.flag_won()
+  else:
+    plane.set_pos(airport_pos)
+    plane.set_rot(airport_rot)
+    plane.set_type(plane.get_rand_type())
+    plane.remove_passengers()
+    is_any_poi_waiting = false
+    speech_bubble.text = "Save me from my home!"
+    if next_chara_is_lumber: chara_sprite.texture = chara_tex_lumber
+    if !next_chara_is_lumber: chara_sprite.texture = chara_tex_mechanic
+    next_chara_is_lumber = !next_chara_is_lumber
 
 func get_is_any_poi_waiting() -> bool:
   return is_any_poi_waiting

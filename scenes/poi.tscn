@@ -13,6 +13,7 @@ z_index = 1
 z_as_relative = false
 scale = Vector2(2.0000017, 2.0000017)
 script = ExtResource("1_6r3jc")
+prep_time = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]
 

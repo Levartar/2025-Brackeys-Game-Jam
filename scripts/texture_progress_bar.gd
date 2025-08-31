@@ -16,4 +16,3 @@ func _get_terrain():
 
 func update_progress(val: float) -> void:
 	self.value += val
-

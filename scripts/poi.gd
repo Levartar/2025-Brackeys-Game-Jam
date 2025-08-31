@@ -42,6 +42,7 @@ func _process(delta: float) -> void:
       # print("State:", state) # test
       prep_countdown.visible = false
       if hut_sprite: hut_sprite.modulate = Color(0.2, 0.2, 0.2, 1.0) # TODO: replace
+      GameManager.flag_lost()
 
 func activate() -> void:
   if not flight_sim.get_is_any_poi_waiting() and not plane.has_passengers:

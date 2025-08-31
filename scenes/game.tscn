@@ -145,9 +145,6 @@ script = ExtResource("1_lnu2h")
 unique_name_in_owner = true
 instruction = NodePath("../../Instruction")
 
-[node name="Plane" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="0"]
-is_test = true
-
 [node name="Terrain" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapContainer/Flight Sim" index="1"]
 water_longevity = 1.0
 water_fade_steps = 100.0
