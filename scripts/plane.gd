@@ -81,6 +81,10 @@ func _process(delta: float) -> void:
       deployed_after_cooldown = false
 
 func _physics_process(delta):
+  if _is_outside_screen_boundary():
+    var flight_sim = get_parent()
+    position = flight_sim.airport_pos
+    rotation_degrees = flight_sim.airport_rot
   if Input.is_action_just_pressed("interact") and is_over_poi and poi_interaction:
     poi_interaction.call()
   rotation_direction = Input.get_axis("steer_left", "steer_right")
@@ -99,6 +103,14 @@ func _physics_process(delta):
       speed_mod = 1.0;
     if Input.is_action_just_pressed("swap_plane_type"):
       set_type(get_next_type())
+
+func _is_outside_screen_boundary(margin: int = 400) -> bool:
+  var viewport_size = get_viewport().get_visible_rect().size
+  var pos = global_position
+  return (pos.x < -margin or
+          pos.x > viewport_size.x + margin or
+          pos.y < -margin or
+          pos.y > viewport_size.y + margin)
 
 func activate_cooldown() -> void:
   if cooldown > 0:
